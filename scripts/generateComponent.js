@@ -67,7 +67,6 @@ process.stdin.on('data', async (chunk) => {
     }
 
     try {
-        
         const packageName = jsonObj.className
         // 获取组件名
         log(`Generating vue file ${vueFile}`)

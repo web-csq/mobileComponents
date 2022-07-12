@@ -1,13 +1,27 @@
 {
     "version": "1.0.0",
-    "lasttime": "2022-07-07 17:28:23",
+    "lasttime": "2022-07-11 17:10:12",
     "author": "申龙",
-    "className": "basics",
+    "className": "mobileLayout",
     "module": [
         {
-            "classId": "idm.componet.basics.text",
+            "classId": "idm.component.mobileLayout.text",
             "comName": "文本",
             "className": "IText",
+            "comType": "common",
+            "comLangue": "vue"
+        },
+        {
+            "classId": "idm.component.mobileLayout.itabbar",
+            "comName": "标签栏",
+            "className": "ITabbar",
+            "comType": "common",
+            "comLangue": "vue"
+        },
+        {
+            "classId": "idm.component.mobileLayout.inavbar",
+            "comName": "导航栏",
+            "className": "INavBar",
             "comType": "common",
             "comLangue": "vue"
         }
