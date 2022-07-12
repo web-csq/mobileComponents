@@ -57,7 +57,6 @@
 </template>
 <script>
 import NavBar from 'vant/lib/nav-bar'
-import 'vant/lib/nav-bar/style'
 export default {
     name: 'INavBar',
     components: {
@@ -542,6 +541,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~vant/lib/nav-bar/index.css';
 $iconSize: 18px;
 .align-center {
     display: flex;

@@ -21,36 +21,133 @@
             "desc": "提供设置组件能达到展示效果的基本属性设置信息",
             "children": [
                 {
-                    "type": "textarea",
+                    "type": "radio",
+                    "styleType": "radio",
                     "layoutType": "inline",
-                    "text": "文本内容",
-                    "bindKey": "fontContent",
-                    "default": "文本内容"
+                    "text": "是否固定",
+                    "desc": "是否固定在底部",
+                    "bindKey": "isFix",
+                    "default": true,
+                    "dictionary": [
+                        {
+                            "label": "是",
+                            "value": true
+                        },
+                        {
+                            "label": "否",
+                            "value": false
+                        }
+                    ]
+                },
+                {
+                    "type": "radio",
+                    "styleType": "radio",
+                    "layoutType": "inline",
+                    "text": "生成占位",
+                    "desc": "固定在底部时，是否在标签位置生成一个等高的占位元素",
+                    "bindKey": "isPlaceholder",
+                    "default": true,
+                    "dictionary": [
+                        {
+                            "label": "是",
+                            "value": true
+                        },
+                        {
+                            "label": "否",
+                            "value": false
+                        }
+                    ]
+                },
+                {
+                    "type": "radio",
+                    "styleType": "radio",
+                    "layoutType": "inline",
+                    "text": "安全适配",
+                    "desc": "iPhone X 等机型底部存在底部指示条，指示条的操作区域与页面底部存在重合，容易导致用户误操作，因此我们需要针对这些机型进行安全区适配。组件提供了 safe-area-inset-top 或 safe-area-inset-bottom 属性，设置该属性后，即可在对应的机型上开启适配，",
+                    "bindKey": "isSafeAreaInsetBottom",
+                    "default": true,
+                    "dictionary": [
+                        {
+                            "label": "是",
+                            "value": true
+                        },
+                        {
+                            "label": "否",
+                            "value": false
+                        }
+                    ]
+                },
+                {
+                    "type": "inputNumber",
+                    "layoutType": "inline",
+                    "text": "显示层级",
+                    "bindKey": "zIndex",
+                    "default": 1
+                }
+            ]
+        },
+        {
+            "type": "table",
+            "text": "tabbar选项",
+            "bindKey": "tabbarList",
+            "tabText": "选项[index]",
+            "default": [
+                {
+                    "key": "one",
+                    "tab": "选项一",
+                    "isDefaultActive": true
+                },
+                {
+                    "key": "two",
+                    "tab": "选项二",
+                    "isDefaultActive": false
+                },
+                {
+                    "key": "three",
+                    "tab": "选项三",
+                    "isDefaultActive": false
+                }
+            ],
+            "children": [
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "标识",
+                    "bindKey": "key"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "文字",
+                    "bindKey": "tab",
+                    "default": "新增选项"
+                },
+                {
+                    "type": "iconSelect",
+                    "layoutType": "inline",
+                    "text": "图标",
+                    "bindKey": "icon"
+                },
+                {
+                    "type": "iconSelect",
+                    "layoutType": "inline",
+                    "text": "选中图标",
+                    "bindKey": "selectIcon"
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "tab显示自定义函数",
+                    "bindKey": "tabSlotFunction",
+                    "desc": "tab页签内容自定义函数，支持返回HTML格式字符串，接收参数为格式为{...自定义的,当前页签数据对象}，返回html字符串",
+                    "multiple": false
                 },
                 {
                     "type": "switch",
                     "layoutType": "inline",
-                    "text": "title",
-                    "bindKey": "htmlTitle",
-                    "desc": "将内容显示为html标签的title，也就是鼠标放上去会有显示文本内容的文字",
-                    "disabled": false
-                },
-                {
-                    "type": "radio",
-                    "layoutType": "inline",
-                    "text": "默认状态",
-                    "bindKey": "defaultStatus",
-                    "dictionary": [
-                        {
-                            "label": "普通",
-                            "value": "default"
-                        },
-                        {
-                            "label": "隐藏",
-                            "value": "hidden"
-                        }
-                    ],
-                    "default": "default"
+                    "text": "默认选中",
+                    "bindKey": "isDefaultActive",
+                    "default": false
                 }
             ]
         },
@@ -61,34 +158,92 @@
             "helpUrl": "",
             "children": [
                 {
-                    "type": "box",
-                    "layoutType": "block",
-                    "text": "内外边距",
-                    "bindKey": "box"
-                },
-                {
                     "type": "inlineGroup",
                     "text": "宽高",
                     "children": [
                         {
                             "type": "input",
                             "layoutType": "block",
-                            "text": "宽",
+                            "text": "tabbar宽",
                             "desc": "填写auto则为自适应，或者使用px、%、vw等单位，比如100%、100px、100vw等等",
                             "bindKey": "width",
-                            "width": "60px",
                             "default": "100%"
                         },
                         {
                             "type": "input",
                             "layoutType": "block",
-                            "text": "高",
+                            "text": "tabbar高",
                             "desc": "填写auto则为自适应，或者使用px、%、vh等单位，比如100%、100px、100vh等等",
                             "bindKey": "height",
-                            "width": "60px",
-                            "default": "46px"
+                            "default": "50px"
                         }
                     ]
+                },
+                {
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "内外边距",
+                    "bindKey": "box"
+                },
+                {
+                    "type": "border",
+                    "layoutType": "block",
+                    "text": "边框",
+                    "bindKey": "border",
+                    "default": {
+                        "border": {
+                            "top": {
+                                "style": "solid",
+                                "width": 1,
+                                "widthUnit": "px",
+                                "colors": {
+                                    "hex8": "#DFD7D7FF"
+                                }
+                            },
+                            "right": {
+                                "style": "",
+                                "width": 0,
+                                "widthUnit": "",
+                                "colors": {
+                                    "hex8": ""
+                                }
+                            },
+                            "bottom": {
+                                "style": "",
+                                "width": 0,
+                                "widthUnit": "",
+                                "colors": {
+                                    "hex8": ""
+                                }
+                            },
+                            "left": {
+                                "style": "",
+                                "width": 0,
+                                "widthUnit": "",
+                                "colors": {
+                                    "hex8": ""
+                                }
+                            }
+                        },
+                        "radius": {
+                            "leftTop": {
+                                "radius": 0,
+                                "radiusUnit": ""
+                            },
+                            "rightTop": {
+                                "radius": 0,
+                                "radiusUnit": ""
+                            },
+                            "leftBottom": {
+                                "radius": 0,
+                                "radiusUnit": ""
+                            },
+                            "rightBottom": {
+                                "radius": 0,
+                                "radiusUnit": ""
+                            }
+                        }
+                    }
                 },
                 {
                     "type": "group",
@@ -269,19 +424,128 @@
                     ]
                 },
                 {
-                    "type": "border",
-                    "layoutType": "block",
-                    "text": "边框",
-                    "bindKey": "border"
-                },
-                {
                     "type": "font",
                     "layoutType": "block",
                     "text": "文字",
                     "bindKey": "font"
+                },
+                {
+                    "type": "font",
+                    "layoutType": "block",
+                    "text": "选中文字",
+                    "bindKey": "selectFont"
+                },
+                {
+                    "type": "group",
+                    "layoutType": "block",
+                    "text": "图标",
+                    "children": [
+                        {
+                            "type": "inputNumber",
+                            "layoutType": "inline",
+                            "text": "尺寸(px)",
+                            "bindKey": "iconSize",
+                            "default": 22
+                        },
+                        {
+                            "type": "colorPicker",
+                            "layoutType": "inline",
+                            "text": "颜色",
+                            "bindKey": "iconColor",
+                            "default": {}
+                        }
+                    ]
+                },
+                {
+                    "type": "group",
+                    "layoutType": "block",
+                    "text": "选中图标",
+                    "children": [
+                        {
+                            "type": "inputNumber",
+                            "layoutType": "inline",
+                            "text": "尺寸(px)",
+                            "bindKey": "selectIconSize",
+                            "default": 22
+                        },
+                        {
+                            "type": "colorPicker",
+                            "layoutType": "inline",
+                            "text": "颜色",
+                            "bindKey": "selectIconColor",
+                            "default": {}
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "table",
+            "text": "主题设置",
+            "desc": "点击？查看主题设置用法指南",
+            "bindKey": "themeList",
+            "tabText": "主题[index]",
+            "default": [
+                {
+                    "key": "blue",
+                    "mainColor": {
+                        "hex": "#0073CA",
+                        "hex8": "#0073CAFF"
+                    }
+                },
+                {
+                    "key": "red",
+                    "mainColor": {
+                        "hex": "#E21A1A",
+                        "hex8": "#E21A1AFF"
+                    }
+                },
+                {
+                    "key": "green",
+                    "mainColor": {
+                        "hex": "#0EAF64",
+                        "hex8": "#0EAF64FF"
+                    }
+                }
+            ],
+            "children": [
+                {
+                    "type": "select",
+                    "layoutType": "inline",
+                    "text": "主题标识",
+                    "bindKey": "key",
+                    "multiple": false,
+                    "desc": "用于设置主题的标识，此项需要搭配自定义开发切换主题的功能，例如：蓝色标识为blue，用户切换主题的时候存储到数据库中的标识为blue，则这里填写为blue",
+                    "default": "",
+                    "placeholder": "例如：blue",
+                    "ctrlAttrObject": {
+                        "mode": "combobox"
+                    },
+                    "dictionary": [
+                        {
+                            "label": "blue",
+                            "value": "blue"
+                        },
+                        {
+                            "label": "red",
+                            "value": "red"
+                        },
+                        {
+                            "label": "green",
+                            "value": "green"
+                        }
+                    ]
+                },
+                {
+                    "type": "colorPicker",
+                    "layoutType": "inline",
+                    "text": "主要颜色",
+                    "bindKey": "mainColor",
+                    "desc": "主题的主要颜色，作用于tabbar选中的图标和文本",
+                    "placeholder": "请选择颜色",
+                    "display": "@[key]"
                 }
             ]
         }
     ]
 }
-      

@@ -41,6 +41,7 @@ requireComponent.keys().forEach(fileName => {
 })
 Vue.prototype.IDM = window.IDM;
 Vue.config.productionTip = false
+Vue.config.devtools = true
 //这里每次打包都会生成一个随机的变量，唯一，保证能加载到对应的对象
 window[`${process.env.CodeVar}`] = Main;
 // //每次打包都会生成不同的CodeVar
