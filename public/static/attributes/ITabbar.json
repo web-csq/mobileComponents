@@ -97,6 +97,8 @@
                     "tab": "标签",
                     "isShowBadge": true,
                     "badge": "1",
+                    "iconSize": 22,
+                    "selectIconSize": 22,
                     "badgeBgColor": {
                         "hex8": "#EE0A24FF"
                     },
@@ -110,6 +112,8 @@
                     "tab": "标签",
                     "isShowBadge": true,
                     "badge": "99+",
+                    "iconSize": 22,
+                    "selectIconSize": 22,
                     "badgeBgColor": {
                         "hex8": "#EE0A24FF"
                     },
@@ -119,6 +123,8 @@
                 {
                     "key": "three",
                     "tab": "标签",
+                    "iconSize": 22,
+                    "selectIconSize": 22,
                     "badgeBgColor": {
                         "hex8": "#EE0A24FF"
                     },
@@ -238,6 +244,61 @@
                     "bindKey": "tabSlotFunction",
                     "desc": "tab页签内容自定义函数，支持返回HTML格式字符串，接收参数为格式为{...自定义的,当前页签数据对象}，返回html字符串",
                     "multiple": false
+                },
+
+                {
+                    "type": "font",
+                    "layoutType": "block",
+                    "text": "默认文字样式",
+                    "bindKey": "font"
+                },
+                {
+                    "type": "font",
+                    "layoutType": "block",
+                    "text": "选中文字样式",
+                    "bindKey": "selectFont"
+                },
+                {
+                    "type": "group",
+                    "layoutType": "block",
+                    "text": "默认图标样式",
+                    "children": [
+                        {
+                            "type": "inputNumber",
+                            "layoutType": "inline",
+                            "text": "尺寸(px)",
+                            "bindKey": "iconSize",
+                            "default": 22
+                        },
+                        {
+                            "type": "colorPicker",
+                            "layoutType": "inline",
+                            "text": "颜色",
+                            "bindKey": "iconColor",
+                            "default": {}
+                        }
+                    ]
+                },
+                {
+                    "type": "group",
+                    "layoutType": "block",
+                    "text": "选中图标样式",
+                    "children": [
+                        {
+                            "type": "inputNumber",
+                            "layoutType": "inline",
+                            "text": "尺寸(px)",
+                            "bindKey": "selectIconSize",
+                            "default": 22
+                        },
+                        {
+                            "type": "colorPicker",
+                            "layoutType": "inline",
+                            "text": "颜色",
+                            "bindKey": "selectIconColor",
+                            "default": {}
+                        }
+                    ]
                 }
             ]
         },
@@ -518,60 +579,6 @@
                                 }
                             ],
                             "display": "@[bgImgUrl]"
-                        }
-                    ]
-                },
-                {
-                    "type": "font",
-                    "layoutType": "block",
-                    "text": "默认文字",
-                    "bindKey": "font"
-                },
-                {
-                    "type": "font",
-                    "layoutType": "block",
-                    "text": "选中文字",
-                    "bindKey": "selectFont"
-                },
-                {
-                    "type": "group",
-                    "layoutType": "block",
-                    "text": "默认图标",
-                    "children": [
-                        {
-                            "type": "inputNumber",
-                            "layoutType": "inline",
-                            "text": "尺寸(px)",
-                            "bindKey": "iconSize",
-                            "default": 22
-                        },
-                        {
-                            "type": "colorPicker",
-                            "layoutType": "inline",
-                            "text": "颜色",
-                            "bindKey": "iconColor",
-                            "default": {}
-                        }
-                    ]
-                },
-                {
-                    "type": "group",
-                    "layoutType": "block",
-                    "text": "选中图标",
-                    "children": [
-                        {
-                            "type": "inputNumber",
-                            "layoutType": "inline",
-                            "text": "尺寸(px)",
-                            "bindKey": "selectIconSize",
-                            "default": 22
-                        },
-                        {
-                            "type": "colorPicker",
-                            "layoutType": "inline",
-                            "text": "颜色",
-                            "bindKey": "selectIconColor",
-                            "default": {}
                         }
                     ]
                 }

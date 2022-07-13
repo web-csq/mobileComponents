@@ -203,6 +203,16 @@ export default {
                 return '方法未找到'
             }
         },
+        // 设置fix模拟高度
+        handleSetFixMockHeight() {
+            let height = `auto`
+            if (this.moduleObject.env === 'develop' && this.propData.isFix) {
+                height = IDM.develop.getDragWorkspaceInfo().height + 'px'
+            }
+            window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-content-container', {
+                'min-height': height + ' !important'
+            })
+        },
         // 通用的url参数对象
         commonParam() {
             let urlObject = IDM.url.queryObject()
@@ -223,22 +233,90 @@ export default {
         tabbarItemToStyleObject() {
             this.propData.tabbarList &&
                 this.propData.tabbarList.forEach((el, index) => {
+                    const badgeBgColorObj = {},
+                        fontObj = {},
+                        selectFontObj = {},
+                        iconObj = {},
+                        selectIconObj = {}
+                    //角标背景
                     if (el.badgeBgColor && el.badgeBgColor.hex8) {
-                        window.IDM.setStyleToPageHead(
-                            this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .van-info`,
-                            {
-                                'background-color': IDM.hex8ToRgbaString(el.badgeBgColor.hex8)
-                            }
-                        )
+                        badgeBgColorObj['background-color'] = IDM.hex8ToRgbaString(el.badgeBgColor.hex8)
                     }
+                    // 默认字体
+                    if (el.font) {
+                        fontObj['font-family'] = el.font.fontFamily
+                        if (el.font.fontColors.hex8) {
+                            fontObj['color'] = IDM.hex8ToRgbaString(el.font.fontColors.hex8) + ' !important'
+                        }
+                        fontObj['font-weight'] = el.font.fontWeight && el.font.fontWeight.split(' ')[0]
+                        fontObj['font-style'] = el.font.fontStyle
+                        fontObj['font-size'] = el.font.fontSize + el.font.fontSizeUnit
+                        fontObj['line-height'] =
+                            el.font.fontLineHeight +
+                            (el.font.fontLineHeightUnit == '-' ? '' : el.font.fontLineHeightUnit)
+                        fontObj['text-align'] = el.font.fontTextAlign
+                        fontObj['text-decoration'] = el.font.fontDecoration
+                    }
+                    // 选中字体
+                    if (el.selectFont) {
+                        selectFontObj['font-family'] = el.selectFont.fontFamily
+                        if (el.selectFont.fontColors.hex8) {
+                            selectFontObj['color'] = IDM.hex8ToRgbaString(el.selectFont.fontColors.hex8) + ' !important'
+                        }
+                        selectFontObj['font-weight'] =
+                            el.selectFont.fontWeight && el.selectFont.fontWeight.split(' ')[0]
+                        selectFontObj['font-style'] = el.selectFont.fontStyle
+                        selectFontObj['font-size'] = el.selectFont.fontSize + el.selectFont.fontSizeUnit
+                        selectFontObj['line-height'] =
+                            el.selectFont.fontLineHeight +
+                            (el.selectFont.fontLineHeightUnit == '-' ? '' : el.selectFont.fontLineHeightUnit)
+                        selectFontObj['text-align'] = el.selectFont.fontTextAlign
+                        selectFontObj['text-decoration'] = el.selectFont.fontDecoration
+                    }
+                    // 默认图标
+                    if (el.iconSize) {
+                        iconObj['width'] = el.iconSize + 'px'
+                        iconObj['height'] = el.iconSize + 'px'
+                        iconObj['font-size'] = el.iconSize + 'px'
+                    }
+                    if (el.iconColor && el.iconColor.hex8) {
+                        iconObj['fill'] = IDM.hex8ToRgbaString(el.iconColor.hex8)
+                        iconObj['color'] = IDM.hex8ToRgbaString(el.iconColor.hex8)
+                    }
+                    // 选中图标
+                    if (el.selectIconSize) {
+                        selectIconObj['width'] = el.selectIconSize + 'px'
+                        selectIconObj['height'] = el.selectIconSize + 'px'
+                        selectIconObj['font-size'] = el.selectIconSize + 'px'
+                    }
+                    if (el.selectIconColor && el.selectIconColor.hex8) {
+                        selectIconObj['fill'] = IDM.hex8ToRgbaString(el.selectIconColor.hex8) + ' !important'
+                        selectIconObj['color'] = IDM.hex8ToRgbaString(el.selectIconColor.hex8) + ' !important'
+                    }
+                    window.IDM.setStyleToPageHead(
+                        this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .van-info`,
+                        badgeBgColorObj
+                    )
+                    window.IDM.setStyleToPageHead(
+                        this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .idm-tabbar-text`,
+                        fontObj
+                    )
+                    window.IDM.setStyleToPageHead(
+                        this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .idm-tabbar-text-active`,
+                        selectFontObj
+                    )
+                    window.IDM.setStyleToPageHead(
+                        this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .idm-tabbar-icon`,
+                        iconObj
+                    )
+                    window.IDM.setStyleToPageHead(
+                        this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .idm-tabbar-select-icon`,
+                        selectIconObj
+                    )
                 })
         },
         convertAttrToStyleObject() {
             const styleObject = {},
-                fontObj = {},
-                selectFontObj = {},
-                iconObj = {},
-                selectIconObj = {},
                 fontBoxObj = {}
             if (this.propData.bgSize && this.propData.bgSize == 'custom') {
                 styleObject['background-size'] =
@@ -267,24 +345,6 @@ export default {
                         continue
                     }
                     switch (key) {
-                        case 'iconSize':
-                            iconObj['width'] = element + 'px'
-                            iconObj['height'] = element + 'px'
-                            iconObj['font-size'] = element + 'px'
-                            break
-                        case 'iconColor':
-                            iconObj['fill'] = IDM.hex8ToRgbaString(element.hex8)
-                            iconObj['color'] = IDM.hex8ToRgbaString(element.hex8)
-                            break
-                        case 'selectIconSize':
-                            selectIconObj['width'] = element + 'px'
-                            selectIconObj['height'] = element + 'px'
-                            selectIconObj['font-size'] = element + 'px'
-                            break
-                        case 'selectIconColor':
-                            selectIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
-                            selectIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
-                            break
                         case 'boxShadow':
                             styleObject['box-shadow'] = element
                             break
@@ -419,50 +479,12 @@ export default {
                             styleObject['border-bottom-right-radius'] =
                                 element.radius.rightBottom.radius + element.radius.rightBottom.radiusUnit
                             break
-                        case 'font':
-                            fontObj['font-family'] = element.fontFamily
-                            if (element.fontColors.hex8) {
-                                fontObj['color'] = IDM.hex8ToRgbaString(element.fontColors.hex8) + ' !important'
-                            }
-                            fontObj['font-weight'] = element.fontWeight && element.fontWeight.split(' ')[0]
-                            fontObj['font-style'] = element.fontStyle
-                            fontObj['font-size'] = element.fontSize + element.fontSizeUnit
-                            fontObj['line-height'] =
-                                element.fontLineHeight +
-                                (element.fontLineHeightUnit == '-' ? '' : element.fontLineHeightUnit)
-                            fontObj['text-align'] = element.fontTextAlign
-                            fontObj['text-decoration'] = element.fontDecoration
-                            break
-                        case 'selectFont':
-                            selectFontObj['font-family'] = element.fontFamily
-                            if (element.fontColors.hex8) {
-                                selectFontObj['color'] = IDM.hex8ToRgbaString(element.fontColors.hex8) + ' !important'
-                            }
-                            selectFontObj['font-weight'] = element.fontWeight && element.fontWeight.split(' ')[0]
-                            selectFontObj['font-style'] = element.fontStyle
-                            selectFontObj['font-size'] = element.fontSize + element.fontSizeUnit
-                            selectFontObj['line-height'] =
-                                element.fontLineHeight +
-                                (element.fontLineHeightUnit == '-' ? '' : element.fontLineHeightUnit)
-                            selectFontObj['text-align'] = element.fontTextAlign
-                            selectFontObj['text-decoration'] = element.fontDecoration
-                            break
                     }
                 }
             }
             window.IDM.setStyleToPageHead(this.moduleObject.id + ' .van-tabbar', styleObject)
-            let height = `auto`
-            if (this.moduleObject.env === 'develop' && this.propData.isFix) {
-                height = IDM.develop.getDragWorkspaceInfo().height + 'px'
-            }
-            window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-content-container', {
-                'min-height': height + ' !important'
-            })
-            window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-text', fontObj)
-            window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-text-active', selectFontObj)
-            window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-icon', iconObj)
-            window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-select-icon', selectIconObj)
             window.IDM.setStyleToPageHead(this.moduleObject.id + ' .van-tabbar-item__text', fontBoxObj)
+            this.handleSetFixMockHeight()
             this.initData()
         },
         /**
@@ -532,6 +554,9 @@ export default {
                             }
                         })
                     }
+                    break
+                case 'pageResize':
+                    this.handleSetFixMockHeight()
                     break
             }
         },

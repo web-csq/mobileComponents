@@ -154,8 +154,10 @@ export default {
                     }
                     switch (key) {
                         case 'leftIconColor':
-                            leftIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
-                            leftIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                            if(element.hex8) {
+                                leftIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                                leftIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                            }
                             break
                         case 'leftIconSize':
                             leftIconObj['width'] = element + 'px'
@@ -163,8 +165,10 @@ export default {
                             leftIconObj['font-size'] = element + 'px'
                             break
                         case 'rightIconColor':
-                            rightIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
-                            rightIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                            if(element.hex8) {
+                                rightIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                                rightIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                            }
                             break
                         case 'rightIconSize':
                             rightIconObj['width'] = element + 'px'
