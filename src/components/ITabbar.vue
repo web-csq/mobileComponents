@@ -3,7 +3,7 @@
         <div v-for="(item, index) in propData.tabbarList" :key="index">
             <div
                 class="drag_container"
-                v-show="active === index && !item.tabSlotFunction"
+                v-show="active === index && (!item.tabSlotFunction || item.tabSlotFunction.length === 0)"
                 :class="['idm-tabbar-content-container', `idm-tabbar-contentinner-${item.key}`]"
                 idm-ctrl-inner
                 :idm-ctrl-id="moduleObject.id"
@@ -11,7 +11,8 @@
             ></div>
 
             <div
-                v-if="item.tabSlotFunction && item.tabSlotFunction.length > 0"
+                class="idm-tabbar-content-container"
+                v-if="active === index && item.tabSlotFunction && item.tabSlotFunction.length > 0"
                 v-html="getTabbarCustomRender(item)"
             ></div>
         </div>
@@ -21,20 +22,40 @@
             :placeholder="propData.isPlaceholder"
             :safe-area-inset-bottom="propData.isSafeAreaInsetBottom"
             :z-index="propData.zIndex"
+            :before-change="handleTabbarBeforeChange"
             :class="[moduleObject.env === 'develop' ? 'idm-tabbar-develop' : '']"
         >
-            <van-tabbar-item v-for="(item, index) in propData.tabbarList" :key="index">
+            <van-tabbar-item
+                v-for="(item, index) in propData.tabbarList"
+                :key="index"
+                :badge="item.isShowBadge ? item.badge : ''"
+            >
                 <template #icon="props">
-                    <div class="item-center" v-if="(item.icon && item.icon.length > 0) || (item.selectIcon && item.selectIcon.length > 0)">
+                    <div
+                        class="item-center"
+                        v-if="(item.icon && item.icon.length > 0) || (item.selectIcon && item.selectIcon.length > 0)"
+                    >
                         <svg
-                            v-if="(!props.active && item.icon&& item.icon.length > 0) || !item.selectIcon || item.selectIcon.length == 0"
+                            v-if="
+                                (!props.active && item.icon && item.icon.length > 0) ||
+                                !item.selectIcon ||
+                                item.selectIcon.length == 0
+                            "
                             class="idm-tabbar-icon"
-                            :class="[(!item.selectIcon || item.selectIcon.length == 0) && props.active ? 'idm-tabbar-select-icon' : '']"
+                            :class="[
+                                (!item.selectIcon || item.selectIcon.length == 0) && props.active
+                                    ? 'idm-tabbar-select-icon'
+                                    : ''
+                            ]"
                             aria-hidden="true"
                         >
                             <use :xlink:href="`#${item.icon[0]}`"></use>
                         </svg>
-                        <svg v-if="props.active && item.selectIcon && item.selectIcon.length > 0" class="idm-tabbar-select-icon" aria-hidden="true">
+                        <svg
+                            v-if="props.active && item.selectIcon && item.selectIcon.length > 0"
+                            class="idm-tabbar-select-icon"
+                            aria-hidden="true"
+                        >
                             <use :xlink:href="`#${item.selectIcon[0]}`"></use>
                         </svg>
                     </div>
@@ -44,9 +65,7 @@
                         <svg-icon icon-class="tabbar-settings" v-else></svg-icon>
                     </div>
                 </template>
-                <span :class="[active === index ? 'idm-tabbar-text-active' : 'idm-tabbar-text']">{{
-                    item.tab
-                }}</span>
+                <span :class="[active === index ? 'idm-tabbar-text-active' : 'idm-tabbar-text']">{{ item.tab }}</span>
             </van-tabbar-item>
         </van-tabbar>
     </div>
@@ -65,18 +84,7 @@ export default {
         return {
             moduleObject: {},
             active: 0,
-            propData: this.$root.propData.compositeAttr || {
-                tabbarList: [
-                    {
-                        key: 'index',
-                        tab: '首页',
-                        tabSlotFunction: '',
-                        isDefaultActive: false,
-                        icon: [],
-                        selectIcon: []
-                    }
-                ]
-            }
+            propData: this.$root.propData.compositeAttr || {}
         }
     },
     created() {
@@ -85,6 +93,75 @@ export default {
         this.convertThemeListAttrToStyleObject()
     },
     methods: {
+        handleTabbarBeforeChange(index) {
+            if (this.propData.clickItemFunction && this.propData.clickItemFunction.length > 0) {
+                const params = this.commonParam()
+                try {
+                    const booleanResult =
+                        window[this.propData.clickItemFunction[0].name] &&
+                        window[this.propData.clickItemFunction[0].name].call(this, {
+                            ...params,
+                            ...this.propData.clickItemFunction[0].param,
+                            active: index,
+                            moduleObject: this.moduleObject
+                        })
+                    // 返回false 可阻止切换
+                    return booleanResult
+                } catch (error) {}
+            }
+            return true
+        },
+        handleSetDotContent(item, index, content) {
+            if (!window.isNaN(parseInt(content))) {
+                content = Number(content)
+                if (content > 99) {
+                    content = '99+'
+                }
+            }
+            const tabbarList = _.cloneDeep(this.propData.tabbarList)
+            tabbarList[index] = { ...item, badge: content }
+            this.$set(this.propData, 'tabbarList', tabbarList)
+        },
+        handleSetItemDot(item, index) {
+            switch (item.dotContentType) {
+                case 'customFunction':
+                    if (item.dotContentFunction && item.dotContentFunction.length > 0) {
+                        const params = this.commonParam()
+                        try {
+                            const dotContent =
+                                window[item.dotContentFunction[0].name] &&
+                                window[item.dotContentFunction[0].name].call(this, {
+                                    ...params,
+                                    ...item.dotContentFunction[0].param,
+                                    moduleObject: this.moduleObject
+                                })
+                            this.handleSetDotContent(item, index, dotContent)
+                        } catch (error) {}
+                    }
+                    break
+                case 'interface':
+                    item.dotInterface &&
+                        window.IDM.http
+                            .get(item.dotInterface)
+                            .then((res) => {
+                                if (res.status == 200 && res.data.code == 200) {
+                                    this.handleSetDotContent(item, index, res.data.data)
+                                } else {
+                                    IDM.message.error(res.data.message)
+                                }
+                            })
+                            .catch(function (error) {})
+                    break
+            }
+        },
+        handleSetDot() {
+            this.propData.tabbarList &&
+                this.propData.tabbarList.forEach((el, index) => {
+                    if (el.isShowBadge) {
+                        this.handleSetItemDot(el, index)
+                    }
+                })
+        },
         /**
          * 获取tab自定义的数据
          */
@@ -127,7 +204,8 @@ export default {
                 fontObj = {},
                 selectFontObj = {},
                 iconObj = {},
-                selectIconObj = {}
+                selectIconObj = {},
+                fontBoxObj = {}
             if (this.propData.bgSize && this.propData.bgSize == 'custom') {
                 styleObject['background-size'] =
                     (this.propData.bgSizeWidth
@@ -159,20 +237,23 @@ export default {
                             iconObj['width'] = element + 'px'
                             iconObj['height'] = element + 'px'
                             iconObj['font-size'] = element + 'px'
-                            break;
+                            break
                         case 'iconColor':
                             iconObj['fill'] = element.hex8
                             iconObj['color'] = element.hex8
-                            break;
+                            break
                         case 'selectIconSize':
                             selectIconObj['width'] = element + 'px'
                             selectIconObj['height'] = element + 'px'
                             selectIconObj['font-size'] = element + 'px'
-                            break;
+                            break
                         case 'selectIconColor':
                             selectIconObj['fill'] = element.hex8 + ' !important'
                             selectIconObj['color'] = element.hex8 + ' !important'
-                            break;
+                            break
+                        case 'boxShadow':
+                            styleObject['box-shadow'] = element
+                            break
                         case 'width':
                         case 'height':
                             styleObject[key] = element
@@ -206,6 +287,32 @@ export default {
                             }
                             if (element.paddingLeftVal) {
                                 styleObject['padding-left'] = `${element.paddingLeftVal}`
+                            }
+                            break
+                        case 'fontBox':
+                            if (element.marginTopVal) {
+                                fontBoxObj['margin-top'] = `${element.marginTopVal}`
+                            }
+                            if (element.marginRightVal) {
+                                fontBoxObj['margin-right'] = `${element.marginRightVal}`
+                            }
+                            if (element.marginBottomVal) {
+                                fontBoxObj['margin-bottom'] = `${element.marginBottomVal}`
+                            }
+                            if (element.marginLeftVal) {
+                                fontBoxObj['margin-left'] = `${element.marginLeftVal}`
+                            }
+                            if (element.paddingTopVal) {
+                                fontBoxObj['padding-top'] = `${element.paddingTopVal}`
+                            }
+                            if (element.paddingRightVal) {
+                                fontBoxObj['padding-right'] = `${element.paddingRightVal}`
+                            }
+                            if (element.paddingBottomVal) {
+                                fontBoxObj['padding-bottom'] = `${element.paddingBottomVal}`
+                            }
+                            if (element.paddingLeftVal) {
+                                fontBoxObj['padding-left'] = `${element.paddingLeftVal}`
                             }
                             break
                         case 'bgImgUrl':
@@ -313,6 +420,7 @@ export default {
             window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-text-active', selectFontObj)
             window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-icon', iconObj)
             window.IDM.setStyleToPageHead(this.moduleObject.id + ' .idm-tabbar-select-icon', selectIconObj)
+            window.IDM.setStyleToPageHead(this.moduleObject.id + ' .van-tabbar-item__text', fontBoxObj)
             this.initData()
         },
         /**
@@ -358,17 +466,32 @@ export default {
         },
         initData() {
             // 至少2个以上
-            if (this.moduleObject.env === 'development' && this.propData.tabbarList.length > 1) {
-                const defaultActive = this.propData.tabbarList.findIndex((el) => el.isDefaultActive)
+            if (this.moduleObject.env !== 'develop' && this.propData.tabbarList.length > 1) {
+                const tabbarList = _.cloneDeep(this.propData.tabbarList)
+                const defaultActive = tabbarList.findIndex((el) => el.isDefaultActive)
+                tabbarList.forEach((el) => {
+                    el.badge = ''
+                })
                 this.active = defaultActive
+                this.propData.tabbarList = tabbarList
             }
+            this.handleSetDot()
         },
-        receiveBroadcastMessage(object) {
-            console.log('组件收到消息', object)
-            if (object.type && object.type == 'linkageShowModule') {
-                this.showThisModuleHandle()
-            } else if (object.type && object.type == 'linkageHideModule') {
-                this.hideThisModuleHandle()
+        receiveBroadcastMessage(messageObject) {
+            console.log('组件收到消息', messageObject)
+            switch (messageObject.type) {
+                case 'websocket':
+                    if (messageObject.message) {
+                        const messageData =
+                            (typeof messageObject.message === 'string' && JSON.parse(messageObject.message)) ||
+                            messageObject.message
+                        this.propData.tabbarList.forEach((el, index) => {
+                            if (messageData.includes(el.refreshKey)) {
+                                this.handleSetItemDot(el, index)
+                            }
+                        })
+                    }
+                    break
             }
         },
         setContextValue(object) {
@@ -396,6 +519,7 @@ export default {
 <style lang="scss" scoped>
 @import '~vant/lib/tabbar/index.css';
 @import '~vant/lib/tabbar-item/index.css';
+@import '~vant/lib/info/index.css';
 $fontSize: 12px;
 .idm-tabbar {
     & ::v-deep() .van-tabbar-item--active {
@@ -410,9 +534,9 @@ $fontSize: 12px;
             position: absolute;
         }
     }
-    .idm-tabbar-text, .idm-tabbar-text-active {
+    .idm-tabbar-text,
+    .idm-tabbar-text-active {
         font-size: $fontSize;
-        
     }
     .item-center {
         display: flex;

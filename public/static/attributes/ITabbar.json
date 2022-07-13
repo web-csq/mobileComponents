@@ -94,45 +94,120 @@
             "default": [
                 {
                     "key": "one",
-                    "tab": "选项一",
+                    "tab": "标签",
+                    "isShowBadge": true,
+                    "badge": "1",
+                    "isChangeRefresh": true,
+                    "refreshKey": "index",
+                    "dotContentType": "customFunction",
                     "isDefaultActive": true
                 },
                 {
                     "key": "two",
-                    "tab": "选项二",
+                    "tab": "标签",
+                    "isShowBadge": true,
+                    "badge": "99+",
+                    "dotContentType": "customFunction",
                     "isDefaultActive": false
                 },
                 {
                     "key": "three",
-                    "tab": "选项三",
+                    "tab": "标签",
+                    "dotContentType": "customFunction",
                     "isDefaultActive": false
                 }
             ],
             "children": [
                 {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "标识",
-                    "bindKey": "key"
-                },
-                {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "文字",
-                    "bindKey": "tab",
-                    "default": "新增选项"
-                },
-                {
                     "type": "iconSelect",
                     "layoutType": "inline",
                     "text": "图标",
+                    "desc": "设置tabbar的图标，如果没有设置选中图标，则会用此图标代替选中图标",
                     "bindKey": "icon"
                 },
                 {
                     "type": "iconSelect",
                     "layoutType": "inline",
+                    "desc": "设置tabbar的选中图标，如果设置了选中图标，上方的图标设置必须要选择一个",
                     "text": "选中图标",
                     "bindKey": "selectIcon"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "tab标识",
+                    "bindKey": "key"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "tab文字",
+                    "bindKey": "tab",
+                    "default": "新增选项"
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "默认选中",
+                    "bindKey": "isDefaultActive",
+                    "default": false
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "显示角标",
+                    "bindKey": "isShowBadge"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "刷新KEY",
+                    "desc": "设置此tab的角标内容刷新key，组件收到消息后，通过messageObject.type === websocket，并且messageObject.message中含有此tab配置的刷新key即刷新",
+                    "bindKey": "refreshKey"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "",
+                    "desc": "默认显示角标内容，不显示",
+                    "display": "@[false]",
+                    "bindKey": "badge"
+                },
+                {
+                    "type": "select",
+                    "layoutType": "inline",
+                    "text": "角标内容",
+                    "desc": "设置tabbar-item角标内容获取方式",
+                    "bindKey": "dotContentType",
+                    "default": "customFunction",
+                    "dictionary": [
+                        {
+                            "label": "自定义函数",
+                            "value": "customFunction"
+                        },
+                        {
+                            "label": "接口返回",
+                            "value": "interface"
+                        }
+                    ]
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "角标内容函数",
+                    "bindKey": "dotContentFunction",
+                    "display": "@[dotContentType === 'customFunction']",
+                    "desc": "获取角标内容自定义函数，返回格式：return '角标内容',例如：return 11, 如果是数字，超过99则显示99+",
+                    "multiple": false
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "角标接口",
+                    "desc": "获取角标内容的接口，接口返回示例 {code: 200, data: 角标内容(如果是数字，超过99则显示99+), message: ''}",
+                    "display": "@[dotContentType === 'interface']",
+                    "bindKey": "dotInterface",
+                    "placeholder": "请输入接口地址"
                 },
                 {
                     "type": "actionSelect",
@@ -141,13 +216,6 @@
                     "bindKey": "tabSlotFunction",
                     "desc": "tab页签内容自定义函数，支持返回HTML格式字符串，接收参数为格式为{...自定义的,当前页签数据对象}，返回html字符串",
                     "multiple": false
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "默认选中",
-                    "bindKey": "isDefaultActive",
-                    "default": false
                 }
             ]
         },
@@ -186,10 +254,18 @@
                     "bindKey": "box"
                 },
                 {
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "文字边距",
+                    "desc": "设置tabbar文字",
+                    "bindKey": "fontBox"
+                },
+                {
                     "type": "border",
                     "layoutType": "block",
-                    "text": "边框",
+                    "text": "tabbar边框",
                     "bindKey": "border",
+                    "desc": "设置tabbar边框，默认border-top: 1px solid #DFD7D7FF",
                     "default": {
                         "border": {
                             "top": {
@@ -244,6 +320,12 @@
                             }
                         }
                     }
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "tabbar阴影",
+                    "bindKey": "boxShadow"
                 },
                 {
                     "type": "group",
@@ -544,6 +626,21 @@
                     "desc": "主题的主要颜色，作用于tabbar选中的图标和文本",
                     "placeholder": "请选择颜色",
                     "display": "@[key]"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "text": "高级",
+            "desc": "点击？查看高级设置用法指南",
+            "children": [
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "自定义tabbar点击动作",
+                    "bindKey": "clickItemFunction",
+                    "desc": "此设置用于点击时候执行自定义函数逻辑，回调参数含：active: 当前选中标签的名称或索引值，注意：返回 false 可阻止tabbar默认切换动作",
+                    "multiple": false
                 }
             ]
         }
