@@ -49,7 +49,9 @@
                             class="idm-tabbar-icon"
                             :class="[
                                 (!item.selectIcon || item.selectIcon.length == 0) && props.active
-                                    ? 'idm-tabbar-select-icon'
+                                    ? item.isAnimate
+                                        ? `idm-tabbar-select-icon ${item.animateType}`
+                                        : 'idm-tabbar-select-icon'
                                     : ''
                             ]"
                             aria-hidden="true"
@@ -59,14 +61,25 @@
                         <!-- 选中图标 -->
                         <svg
                             v-if="props.active && item.selectIcon && item.selectIcon.length > 0"
-                            class="idm-tabbar-select-icon"
+                            :class="
+                                item.isAnimate ? `idm-tabbar-select-icon ${item.animateType}` : 'idm-tabbar-select-icon'
+                            "
                             aria-hidden="true"
                         >
                             <use :xlink:href="`#${item.selectIcon[0]}`"></use>
                         </svg>
                     </div>
                     <!-- 没有设置图标的占位icon -->
-                    <div v-else :class="props.active ? 'idm-tabbar-select-icon' : 'idm-tabbar-icon'">
+                    <div
+                        v-else
+                        :class="
+                            props.active
+                                ? item.isAnimate
+                                    ? `idm-tabbar-select-icon ${item.animateType}`
+                                    : 'idm-tabbar-select-icon'
+                                : 'idm-tabbar-icon'
+                        "
+                    >
                         <svg-icon icon-class="tabbar-index" v-if="index === 0"></svg-icon>
                         <svg-icon icon-class="search" v-else-if="index === 1"></svg-icon>
                         <svg-icon icon-class="tabbar-settings" v-else></svg-icon>
@@ -597,6 +610,61 @@ $fontSize: 12px;
     .item-center {
         display: flex;
         align-items: center;
+    }
+    @keyframes tada {
+        from {
+            transform: scale3d(1, 1, 1);
+        }
+        10%,
+        20% {
+            transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+        }
+        30%,
+        50%,
+        70%,
+        90% {
+            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+        }
+        40%,
+        60%,
+        80% {
+            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+        }
+        to {
+            transform: scale3d(1, 1, 1);
+        }
+    }
+    .tada {
+        animation-name: tada;
+        animation-duration: 1s;
+    }
+
+    @keyframes rubberBand {
+        from {
+            transform: scale3d(1, 1, 1);
+        }
+        30% {
+            transform: scale3d(1.25, 0.75, 1);
+        }
+        40% {
+            transform: scale3d(0.75, 1.25, 1);
+        }
+        50% {
+            transform: scale3d(1.15, 0.85, 1);
+        }
+        65% {
+            transform: scale3d(0.95, 1.05, 1);
+        }
+        75% {
+            transform: scale3d(1.05, 0.95, 1);
+        }
+        to {
+            transform: scale3d(1, 1, 1);
+        }
+    }
+    .rubberBand {
+        animation-name: rubberBand;
+        animation-duration: 1s;
     }
 }
 </style>

@@ -99,6 +99,8 @@
                     "badge": "1",
                     "iconSize": 22,
                     "selectIconSize": 22,
+                    "isAnimate": true,
+                    "animateType": "tada",
                     "badgeBgColor": {
                         "hex8": "#EE0A24FF"
                     },
@@ -111,6 +113,8 @@
                     "key": "two",
                     "tab": "标签",
                     "isShowBadge": true,
+                    "isAnimate": true,
+                    "animateType": "tada",
                     "badge": "99+",
                     "iconSize": 22,
                     "selectIconSize": 22,
@@ -124,6 +128,8 @@
                     "key": "three",
                     "tab": "标签",
                     "iconSize": 22,
+                    "isAnimate": true,
+                    "animateType": "tada",
                     "selectIconSize": 22,
                     "badgeBgColor": {
                         "hex8": "#EE0A24FF"
@@ -133,6 +139,14 @@
                 }
             ],
             "children": [
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "图标动画",
+                    "desc": "设置tabbar选中时图标动画开关",
+                    "bindKey": "isAnimate",
+                    "default": true
+                },
                 {
                     "type": "switch",
                     "layoutType": "inline",
@@ -161,6 +175,25 @@
                     "desc": "设置tabbar的选中图标，如果设置了选中图标，上方的默认图标设置必须要选择一个",
                     "text": "选中图标",
                     "bindKey": "selectIcon"
+                },
+                {
+                    "type": "select",
+                    "layoutType": "inline",
+                    "text": "动画类型",
+                    "desc": "开启图标动画后，选择图标类型",
+                    "bindKey": "animateType",
+                    "display": "@[isAnimate === true]",
+                    "default": "tada",
+                    "dictionary": [
+                        {
+                            "label": "tada",
+                            "value": "tada"
+                        },
+                        {
+                            "label": "rubberBand",
+                            "value": "rubberBand"
+                        }
+                    ]
                 },
                 {
                     "type": "input",
