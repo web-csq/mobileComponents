@@ -21,25 +21,28 @@
             "desc": "提供设置组件能达到展示效果的基本属性设置信息",
             "children": [
                 {
-                    "type": "textarea",
-                    "layoutType": "block",
+                    "type": "input",
+                    "layoutType": "inline",
                     "text": "标题文本",
+                    "desc": "设置导航栏标题文本，为空则不显示",
                     "bindKey": "titleText",
                     "placeholder": "输入导航标题文本",
                     "default": "标题"
                 },
                 {
-                    "type": "textarea",
-                    "layoutType": "block",
+                    "type": "input",
+                    "layoutType": "inline",
                     "text": "左侧文本",
+                    "desc": "设置导航栏左侧文本，为空则不显示",
                     "bindKey": "leftText",
                     "placeholder": "输入导航左侧文本",
                     "default": "返回"
                 },
                 {
-                    "type": "textarea",
-                    "layoutType": "block",
+                    "type": "input",
+                    "layoutType": "inline",
                     "text": "右侧文本",
+                    "desc": "设置导航栏右侧文本，为空则不显示",
                     "bindKey": "rightText",
                     "placeholder": "输入导航右侧文本",
                     "default": ""
@@ -155,12 +158,6 @@
             "helpUrl": "",
             "children": [
                 {
-                    "type": "box",
-                    "layoutType": "block",
-                    "text": "内外边距",
-                    "bindKey": "box"
-                },
-                {
                     "type": "inlineGroup",
                     "text": "宽高",
                     "children": [
@@ -184,12 +181,17 @@
                         }
                     ]
                 },
-
                 {
                     "type": "border",
                     "layoutType": "block",
                     "text": "边框",
                     "bindKey": "border"
+                },
+                {
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "内外边距",
+                    "bindKey": "box"
                 },
                 {
                     "type": "group",
@@ -473,14 +475,14 @@
                     "type": "box",
                     "layoutType": "block",
                     "text": "文本边距",
-                    "display": "@[rightText !== '']",
+                    "display": "@[!!rightText]",
                     "bindKey": "rightTextBox"
                 },
                 {
                     "type": "font",
                     "layoutType": "block",
                     "text": "文本字体",
-                    "display": "@[rightText !== '']",
+                    "display": "@[!!rightText]",
                     "bindKey": "rightFont"
                 }
             ]

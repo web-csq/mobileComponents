@@ -97,6 +97,9 @@
                     "tab": "标签",
                     "isShowBadge": true,
                     "badge": "1",
+                    "badgeBgColor": {
+                        "hex8": "#EE0A24FF"
+                    },
                     "isChangeRefresh": true,
                     "refreshKey": "index",
                     "dotContentType": "customFunction",
@@ -107,28 +110,49 @@
                     "tab": "标签",
                     "isShowBadge": true,
                     "badge": "99+",
+                    "badgeBgColor": {
+                        "hex8": "#EE0A24FF"
+                    },
                     "dotContentType": "customFunction",
                     "isDefaultActive": false
                 },
                 {
                     "key": "three",
                     "tab": "标签",
+                    "badgeBgColor": {
+                        "hex8": "#EE0A24FF"
+                    },
                     "dotContentType": "customFunction",
                     "isDefaultActive": false
                 }
             ],
             "children": [
                 {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "显示角标",
+                    "desc": "设置当前tab是否显示角标",
+                    "bindKey": "isShowBadge"
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "默认选中",
+                    "desc": "设置当前tab是否默认选中，如果同时设置多个，则位置靠前的生效",
+                    "bindKey": "isDefaultActive",
+                    "default": false
+                },
+                {
                     "type": "iconSelect",
                     "layoutType": "inline",
-                    "text": "图标",
-                    "desc": "设置tabbar的图标，如果没有设置选中图标，则会用此图标代替选中图标",
+                    "text": "默认图标",
+                    "desc": "设置tabbar的默认图标，即没有选中时的图标，如果没有设置选中图标，则会用此图标代替选中图标",
                     "bindKey": "icon"
                 },
                 {
                     "type": "iconSelect",
                     "layoutType": "inline",
-                    "desc": "设置tabbar的选中图标，如果设置了选中图标，上方的图标设置必须要选择一个",
+                    "desc": "设置tabbar的选中图标，如果设置了选中图标，上方的默认图标设置必须要选择一个",
                     "text": "选中图标",
                     "bindKey": "selectIcon"
                 },
@@ -136,6 +160,7 @@
                     "type": "input",
                     "layoutType": "inline",
                     "text": "tab标识",
+                    "desc": "用于标识当前tab，具有唯一性",
                     "bindKey": "key"
                 },
                 {
@@ -146,23 +171,10 @@
                     "default": "新增选项"
                 },
                 {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "默认选中",
-                    "bindKey": "isDefaultActive",
-                    "default": false
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "显示角标",
-                    "bindKey": "isShowBadge"
-                },
-                {
                     "type": "input",
                     "layoutType": "inline",
                     "text": "刷新KEY",
-                    "desc": "设置此tab的角标内容刷新key，组件收到消息后，通过messageObject.type === websocket，并且messageObject.message中含有此tab配置的刷新key即刷新",
+                    "desc": "设置此tab的角标内容刷新key，组件收到消息后，通过messageObject.type === websocket，并且messageObject.message中含有此tab配置的刷新key，即刷新角标内容",
                     "bindKey": "refreshKey"
                 },
                 {
@@ -172,6 +184,16 @@
                     "desc": "默认显示角标内容，不显示",
                     "display": "@[false]",
                     "bindKey": "badge"
+                },
+                {
+                    "type": "colorPicker",
+                    "layoutType": "inline",
+                    "text": "角标背景",
+                    "desc": "设置角标背景颜色",
+                    "bindKey": "badgeBgColor",
+                    "default": {
+                        "hex8": "#EE0A24FF"
+                    }
                 },
                 {
                     "type": "select",
@@ -226,39 +248,26 @@
             "helpUrl": "",
             "children": [
                 {
-                    "type": "inlineGroup",
-                    "text": "宽高",
-                    "children": [
-                        {
-                            "type": "input",
-                            "layoutType": "block",
-                            "text": "tabbar宽",
-                            "desc": "填写auto则为自适应，或者使用px、%、vw等单位，比如100%、100px、100vw等等",
-                            "bindKey": "width",
-                            "default": "100%"
-                        },
-                        {
-                            "type": "input",
-                            "layoutType": "block",
-                            "text": "tabbar高",
-                            "desc": "填写auto则为自适应，或者使用px、%、vh等单位，比如100%、100px、100vh等等",
-                            "bindKey": "height",
-                            "default": "50px"
-                        }
-                    ]
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "tabbar宽",
+                    "desc": "填写auto则为自适应，或者使用px、%、vw等单位，比如100%、100px、100vw等等",
+                    "bindKey": "width",
+                    "default": "100%"
                 },
                 {
-                    "type": "box",
-                    "layoutType": "block",
-                    "text": "内外边距",
-                    "bindKey": "box"
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "tabbar高",
+                    "desc": "填写auto则为自适应，或者使用px、%、vh等单位，比如100%、100px、100vh等等",
+                    "bindKey": "height",
+                    "default": "50px"
                 },
                 {
-                    "type": "box",
-                    "layoutType": "block",
-                    "text": "文字边距",
-                    "desc": "设置tabbar文字",
-                    "bindKey": "fontBox"
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "tabbar阴影",
+                    "bindKey": "boxShadow"
                 },
                 {
                     "type": "border",
@@ -322,10 +331,17 @@
                     }
                 },
                 {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "tabbar阴影",
-                    "bindKey": "boxShadow"
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "内外边距",
+                    "bindKey": "box"
+                },
+                {
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "文字边距",
+                    "desc": "设置tabbar文字边距",
+                    "bindKey": "fontBox"
                 },
                 {
                     "type": "group",
@@ -508,7 +524,7 @@
                 {
                     "type": "font",
                     "layoutType": "block",
-                    "text": "文字",
+                    "text": "默认文字",
                     "bindKey": "font"
                 },
                 {
@@ -520,7 +536,7 @@
                 {
                     "type": "group",
                     "layoutType": "block",
-                    "text": "图标",
+                    "text": "默认图标",
                     "children": [
                         {
                             "type": "inputNumber",

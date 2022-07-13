@@ -1,6 +1,8 @@
 <template>
     <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="idm-tabbar">
+        <!-- tabbar对应渲染内容 -->
         <div v-for="(item, index) in propData.tabbarList" :key="index">
+            <!-- 拖拽区域 -->
             <div
                 class="drag_container"
                 v-show="active === index && (!item.tabSlotFunction || item.tabSlotFunction.length === 0)"
@@ -9,13 +11,14 @@
                 :idm-ctrl-id="moduleObject.id"
                 :idm-container-index="item.key"
             ></div>
-
+            <!-- 自定义函数渲染 -->
             <div
                 class="idm-tabbar-content-container"
                 v-if="active === index && item.tabSlotFunction && item.tabSlotFunction.length > 0"
                 v-html="getTabbarCustomRender(item)"
             ></div>
         </div>
+        <!-- 底部tabbar -->
         <van-tabbar
             v-model="active"
             :fixed="propData.isFix"
@@ -30,11 +33,13 @@
                 :key="index"
                 :badge="item.isShowBadge ? item.badge : ''"
             >
+                <!-- tabbar-item插槽 -->
                 <template #icon="props">
                     <div
                         class="item-center"
                         v-if="(item.icon && item.icon.length > 0) || (item.selectIcon && item.selectIcon.length > 0)"
                     >
+                        <!-- 默认图标 -->
                         <svg
                             v-if="
                                 (!props.active && item.icon && item.icon.length > 0) ||
@@ -51,6 +56,7 @@
                         >
                             <use :xlink:href="`#${item.icon[0]}`"></use>
                         </svg>
+                        <!-- 选中图标 -->
                         <svg
                             v-if="props.active && item.selectIcon && item.selectIcon.length > 0"
                             class="idm-tabbar-select-icon"
@@ -59,12 +65,14 @@
                             <use :xlink:href="`#${item.selectIcon[0]}`"></use>
                         </svg>
                     </div>
+                    <!-- 没有设置图标的占位icon -->
                     <div v-else :class="props.active ? 'idm-tabbar-select-icon' : 'idm-tabbar-icon'">
                         <svg-icon icon-class="tabbar-index" v-if="index === 0"></svg-icon>
                         <svg-icon icon-class="search" v-else-if="index === 1"></svg-icon>
                         <svg-icon icon-class="tabbar-settings" v-else></svg-icon>
                     </div>
                 </template>
+                <!-- tabbar-item文本 -->
                 <span :class="[active === index ? 'idm-tabbar-text-active' : 'idm-tabbar-text']">{{ item.tab }}</span>
             </van-tabbar-item>
         </van-tabbar>
@@ -91,8 +99,13 @@ export default {
         this.moduleObject = this.$root.moduleObject
         this.convertAttrToStyleObject()
         this.convertThemeListAttrToStyleObject()
+        this.tabbarItemToStyleObject()
     },
     methods: {
+        /**
+         * 点击之前事件，返回false 可阻止切换
+         * @param {index / name} index
+         */
         handleTabbarBeforeChange(index) {
             if (this.propData.clickItemFunction && this.propData.clickItemFunction.length > 0) {
                 const params = this.commonParam()
@@ -105,13 +118,18 @@ export default {
                             active: index,
                             moduleObject: this.moduleObject
                         })
-                    // 返回false 可阻止切换
                     return booleanResult
                 } catch (error) {}
             }
             return true
         },
-        handleSetDotContent(item, index, content) {
+        /**
+         * 设置tabbar-item角标内容
+         * @param {*} item
+         * @param {*} index
+         * @param {*} content
+         */
+        handleSetBadgeContent(item, index, content) {
             if (!window.isNaN(parseInt(content))) {
                 content = Number(content)
                 if (content > 99) {
@@ -122,7 +140,12 @@ export default {
             tabbarList[index] = { ...item, badge: content }
             this.$set(this.propData, 'tabbarList', tabbarList)
         },
-        handleSetItemDot(item, index) {
+        /**
+         * 获取tabbar-item角标内容
+         * @param {*} item
+         * @param {*} index
+         */
+        handleSetItemBadge(item, index) {
             switch (item.dotContentType) {
                 case 'customFunction':
                     if (item.dotContentFunction && item.dotContentFunction.length > 0) {
@@ -135,7 +158,7 @@ export default {
                                     ...item.dotContentFunction[0].param,
                                     moduleObject: this.moduleObject
                                 })
-                            this.handleSetDotContent(item, index, dotContent)
+                            this.handleSetBadgeContent(item, index, dotContent)
                         } catch (error) {}
                     }
                     break
@@ -145,7 +168,7 @@ export default {
                             .get(item.dotInterface)
                             .then((res) => {
                                 if (res.status == 200 && res.data.code == 200) {
-                                    this.handleSetDotContent(item, index, res.data.data)
+                                    this.handleSetBadgeContent(item, index, res.data.data)
                                 } else {
                                     IDM.message.error(res.data.message)
                                 }
@@ -154,17 +177,16 @@ export default {
                     break
             }
         },
-        handleSetDot() {
+        // 设置角标入口函数
+        handleSetBadge() {
             this.propData.tabbarList &&
                 this.propData.tabbarList.forEach((el, index) => {
                     if (el.isShowBadge) {
-                        this.handleSetItemDot(el, index)
+                        this.handleSetItemBadge(el, index)
                     }
                 })
         },
-        /**
-         * 获取tab自定义的数据
-         */
+        // 获取tabbar-item自定义渲染html
         getTabbarCustomRender(item) {
             if (item.tabSlotFunction && item.tabSlotFunction.length > 0) {
                 if (!window[item.tabSlotFunction[0].name]) {
@@ -181,10 +203,7 @@ export default {
                 return '方法未找到'
             }
         },
-        /**
-         * 通用的url参数对象
-         * 所有地址的url参数转换
-         */
+        // 通用的url参数对象
         commonParam() {
             let urlObject = IDM.url.queryObject()
             var params = {
@@ -198,6 +217,21 @@ export default {
             this.propData = propData.compositeAttr || {}
             this.convertAttrToStyleObject()
             this.convertThemeListAttrToStyleObject()
+            this.tabbarItemToStyleObject()
+        },
+        // 设置tabbar-item样式
+        tabbarItemToStyleObject() {
+            this.propData.tabbarList &&
+                this.propData.tabbarList.forEach((el, index) => {
+                    if (el.badgeBgColor && el.badgeBgColor.hex8) {
+                        window.IDM.setStyleToPageHead(
+                            this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .van-info`,
+                            {
+                                'background-color': IDM.hex8ToRgbaString(el.badgeBgColor.hex8)
+                            }
+                        )
+                    }
+                })
         },
         convertAttrToStyleObject() {
             const styleObject = {},
@@ -239,8 +273,8 @@ export default {
                             iconObj['font-size'] = element + 'px'
                             break
                         case 'iconColor':
-                            iconObj['fill'] = element.hex8
-                            iconObj['color'] = element.hex8
+                            iconObj['fill'] = IDM.hex8ToRgbaString(element.hex8)
+                            iconObj['color'] = IDM.hex8ToRgbaString(element.hex8)
                             break
                         case 'selectIconSize':
                             selectIconObj['width'] = element + 'px'
@@ -248,8 +282,8 @@ export default {
                             selectIconObj['font-size'] = element + 'px'
                             break
                         case 'selectIconColor':
-                            selectIconObj['fill'] = element.hex8 + ' !important'
-                            selectIconObj['color'] = element.hex8 + ' !important'
+                            selectIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                            selectIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
                             break
                         case 'boxShadow':
                             styleObject['box-shadow'] = element
@@ -260,59 +294,59 @@ export default {
                             break
                         case 'bgColor':
                             if (element && element.hex8) {
-                                styleObject['background-color'] = element.hex8
+                                styleObject['background-color'] = IDM.hex8ToRgbaString(element.hex8)
                             }
                             break
                         case 'box':
                             if (element.marginTopVal) {
-                                styleObject['margin-top'] = `${element.marginTopVal}`
+                                styleObject['margin-top'] = element.marginTopVal
                             }
                             if (element.marginRightVal) {
-                                styleObject['margin-right'] = `${element.marginRightVal}`
+                                styleObject['margin-right'] = element.marginRightVal
                             }
                             if (element.marginBottomVal) {
-                                styleObject['margin-bottom'] = `${element.marginBottomVal}`
+                                styleObject['margin-bottom'] = element.marginBottomVal
                             }
                             if (element.marginLeftVal) {
-                                styleObject['margin-left'] = `${element.marginLeftVal}`
+                                styleObject['margin-left'] = element.marginLeftVal
                             }
                             if (element.paddingTopVal) {
-                                styleObject['padding-top'] = `${element.paddingTopVal}`
+                                styleObject['padding-top'] = element.paddingTopVal
                             }
                             if (element.paddingRightVal) {
-                                styleObject['padding-right'] = `${element.paddingRightVal}`
+                                styleObject['padding-right'] = element.paddingRightVal
                             }
                             if (element.paddingBottomVal) {
-                                styleObject['padding-bottom'] = `${element.paddingBottomVal}`
+                                styleObject['padding-bottom'] = element.paddingBottomVal
                             }
                             if (element.paddingLeftVal) {
-                                styleObject['padding-left'] = `${element.paddingLeftVal}`
+                                styleObject['padding-left'] = element.paddingLeftVal
                             }
                             break
                         case 'fontBox':
                             if (element.marginTopVal) {
-                                fontBoxObj['margin-top'] = `${element.marginTopVal}`
+                                fontBoxObj['margin-top'] = element.marginTopVal
                             }
                             if (element.marginRightVal) {
-                                fontBoxObj['margin-right'] = `${element.marginRightVal}`
+                                fontBoxObj['margin-right'] = element.marginRightVal
                             }
                             if (element.marginBottomVal) {
-                                fontBoxObj['margin-bottom'] = `${element.marginBottomVal}`
+                                fontBoxObj['margin-bottom'] = element.marginBottomVal
                             }
                             if (element.marginLeftVal) {
-                                fontBoxObj['margin-left'] = `${element.marginLeftVal}`
+                                fontBoxObj['margin-left'] = element.marginLeftVal
                             }
                             if (element.paddingTopVal) {
-                                fontBoxObj['padding-top'] = `${element.paddingTopVal}`
+                                fontBoxObj['padding-top'] = element.paddingTopVal
                             }
                             if (element.paddingRightVal) {
-                                fontBoxObj['padding-right'] = `${element.paddingRightVal}`
+                                fontBoxObj['padding-right'] = element.paddingRightVal
                             }
                             if (element.paddingBottomVal) {
-                                fontBoxObj['padding-bottom'] = `${element.paddingBottomVal}`
+                                fontBoxObj['padding-bottom'] = element.paddingBottomVal
                             }
                             if (element.paddingLeftVal) {
-                                fontBoxObj['padding-left'] = `${element.paddingLeftVal}`
+                                fontBoxObj['padding-left'] = element.paddingLeftVal
                             }
                             break
                         case 'bgImgUrl':
@@ -340,7 +374,9 @@ export default {
                                     element.border.top.width + element.border.top.widthUnit
                                 styleObject['border-top-style'] = element.border.top.style
                                 if (element.border.top.colors.hex8) {
-                                    styleObject['border-top-color'] = element.border.top.colors.hex8
+                                    styleObject['border-top-color'] = IDM.hex8ToRgbaString(
+                                        element.border.top.colors.hex8
+                                    )
                                 }
                             }
                             if (element.border.right.width > 0) {
@@ -348,7 +384,9 @@ export default {
                                     element.border.right.width + element.border.right.widthUnit
                                 styleObject['border-right-style'] = element.border.right.style
                                 if (element.border.right.colors.hex8) {
-                                    styleObject['border-right-color'] = element.border.right.colors.hex8
+                                    styleObject['border-right-color'] = IDM.hex8ToRgbaString(
+                                        element.border.right.colors.hex8
+                                    )
                                 }
                             }
                             if (element.border.bottom.width > 0) {
@@ -356,7 +394,9 @@ export default {
                                     element.border.bottom.width + element.border.bottom.widthUnit
                                 styleObject['border-bottom-style'] = element.border.bottom.style
                                 if (element.border.bottom.colors.hex8) {
-                                    styleObject['border-bottom-color'] = element.border.bottom.colors.hex8
+                                    styleObject['border-bottom-color'] = IDM.hex8ToRgbaString(
+                                        element.border.bottom.colors.hex8
+                                    )
                                 }
                             }
                             if (element.border.left.width > 0) {
@@ -364,7 +404,9 @@ export default {
                                     element.border.left.width + element.border.left.widthUnit
                                 styleObject['border-left-style'] = element.border.left.style
                                 if (element.border.left.colors.hex8) {
-                                    styleObject['border-left-color'] = element.border.left.colors.hex8
+                                    styleObject['border-left-color'] = IDM.hex8ToRgbaString(
+                                        element.border.left.colors.hex8
+                                    )
                                 }
                             }
 
@@ -380,7 +422,7 @@ export default {
                         case 'font':
                             fontObj['font-family'] = element.fontFamily
                             if (element.fontColors.hex8) {
-                                fontObj['color'] = element.fontColors.hex8 + ' !important'
+                                fontObj['color'] = IDM.hex8ToRgbaString(element.fontColors.hex8) + ' !important'
                             }
                             fontObj['font-weight'] = element.fontWeight && element.fontWeight.split(' ')[0]
                             fontObj['font-style'] = element.fontStyle
@@ -394,7 +436,7 @@ export default {
                         case 'selectFont':
                             selectFontObj['font-family'] = element.fontFamily
                             if (element.fontColors.hex8) {
-                                selectFontObj['color'] = element.fontColors.hex8 + ' !important'
+                                selectFontObj['color'] = IDM.hex8ToRgbaString(element.fontColors.hex8) + ' !important'
                             }
                             selectFontObj['font-weight'] = element.fontWeight && element.fontWeight.split(' ')[0]
                             selectFontObj['font-style'] = element.fontStyle
@@ -465,8 +507,7 @@ export default {
             this.initData()
         },
         initData() {
-            // 至少2个以上
-            if (this.moduleObject.env !== 'develop' && this.propData.tabbarList.length > 1) {
+            if (this.moduleObject.env !== 'develop' && this.propData.tabbarList.length > 0) {
                 const tabbarList = _.cloneDeep(this.propData.tabbarList)
                 const defaultActive = tabbarList.findIndex((el) => el.isDefaultActive)
                 tabbarList.forEach((el) => {
@@ -475,7 +516,7 @@ export default {
                 this.active = defaultActive
                 this.propData.tabbarList = tabbarList
             }
-            this.handleSetDot()
+            this.handleSetBadge()
         },
         receiveBroadcastMessage(messageObject) {
             console.log('组件收到消息', messageObject)
@@ -487,7 +528,7 @@ export default {
                             messageObject.message
                         this.propData.tabbarList.forEach((el, index) => {
                             if (messageData.includes(el.refreshKey)) {
-                                this.handleSetItemDot(el, index)
+                                this.handleSetItemBadge(el, index)
                             }
                         })
                     }
@@ -496,18 +537,6 @@ export default {
         },
         setContextValue(object) {
             console.log('统一接口设置的值', object)
-            if (object.type != 'pageCommonInterface') {
-                return
-            }
-            //这里使用的是子表，所以要循环匹配所有子表的属性然后再去设置修改默认值
-            if (object.key == this.propData.dataName) {
-                // this.propData.fontContent = this.getExpressData(this.propData.dataName,this.propData.dataFiled,object.data);
-                this.$set(
-                    this.propData,
-                    'fontContent',
-                    this.getExpressData(this.propData.dataName, this.propData.dataFiled, object.data)
-                )
-            }
         },
         sendBroadcastMessage(object) {
             window.IDM.broadcast && window.IDM.broadcast.send(object)
@@ -522,9 +551,11 @@ export default {
 @import '~vant/lib/info/index.css';
 $fontSize: 12px;
 .idm-tabbar {
+    // tabbar背景透明
     & ::v-deep() .van-tabbar-item--active {
         background: transparent;
     }
+    // 开发环境时修改定位
     & ::v-deep() .van-tabbar--fixed.idm-tabbar-develop {
         position: absolute;
     }

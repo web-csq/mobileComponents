@@ -1,18 +1,14 @@
 <template>
     <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="idm-navbar">
-        <!--
-           组件内部容器
-           增加class="drag_container" 必选
-           idm-ctrl-id：组件的id，这个必须不能为空
-           idm-container-index  组件的内部容器索引，不重复唯一且不变，必选
-         -->
         <van-nav-bar
             :placeholder="propData.isPlaceholder"
             :z-index="propData.zIndex"
             :safe-area-inset-top="propData.isSafeAreaInsetTop"
         >
+            <!-- 左侧插槽 -->
             <template #left>
                 <div class="idm-navbar-left-container" @click="handleLeftClick">
+                    <!-- 左侧图标 -->
                     <div class="align-center" v-if="propData.isShowLeftIcon">
                         <svg
                             v-if="propData.leftIcon && propData.leftIcon.length"
@@ -25,19 +21,24 @@
                             <svg-icon icon-class="arrow-right"></svg-icon>
                         </div>
                     </div>
+                    <!-- 左侧文本 -->
                     <div v-if="propData.leftText" class="idm-navbar-left-text">
                         {{ propData.leftText }}
                     </div>
                 </div>
             </template>
+            <!-- 标题插槽 -->
             <template #title>
                 <div class="idm-navbar-title" @click="handleTitleClick">
                     {{ propData.titleText }}
                 </div>
             </template>
+            <!-- 右侧插槽 -->
             <template #right>
                 <div class="idm-navbar-right-container" @click="handleRightClick">
+                    <!-- 右侧文本 -->
                     <div v-if="propData.rightText" class="idm-navbar-right-text">{{ propData.rightText }}</div>
+                    <!-- 右侧图标 -->
                     <div class="align-center" v-if="propData.isShowRightIcon">
                         <svg
                             v-if="propData.rightIcon && propData.rightIcon.length"
@@ -74,10 +75,7 @@ export default {
         this.convertThemeListAttrToStyleObject()
     },
     methods: {
-        /**
-         * 通用的url参数对象
-         * 所有地址的url参数转换
-         */
+        // 通用的url参数对象
         commonParam() {
             let urlObject = IDM.url.queryObject()
             var params = {
@@ -89,6 +87,7 @@ export default {
         },
         /**
          * 通用自定义函数
+         * @param {函数名称} name
          */
         eventFunHandle(name) {
             var customHandle = this.propData[name]
@@ -102,12 +101,15 @@ export default {
                         })
                 })
         },
+        // 左侧点击事件
         handleLeftClick() {
             this.eventFunHandle('leftCustomFunction')
         },
+        // 标题点击事件
         handleTitleClick() {
             this.eventFunHandle('titleCustomFunction')
         },
+        // 右侧点击事件
         handleRightClick() {
             this.eventFunHandle('rightCustomFunction')
         },
@@ -152,8 +154,8 @@ export default {
                     }
                     switch (key) {
                         case 'leftIconColor':
-                            leftIconObj['fill'] = element.hex8 + ' !important'
-                            leftIconObj['color'] = element.hex8 + ' !important'
+                            leftIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                            leftIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
                             break
                         case 'leftIconSize':
                             leftIconObj['width'] = element + 'px'
@@ -161,8 +163,8 @@ export default {
                             leftIconObj['font-size'] = element + 'px'
                             break
                         case 'rightIconColor':
-                            rightIconObj['fill'] = element.hex8 + ' !important'
-                            rightIconObj['color'] = element.hex8 + ' !important'
+                            rightIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
+                            rightIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
                             break
                         case 'rightIconSize':
                             rightIconObj['width'] = element + 'px'
@@ -178,137 +180,137 @@ export default {
                             break
                         case 'bgColor':
                             if (element && element.hex8) {
-                                styleObject['background-color'] = element.hex8
+                                styleObject['background-color'] = IDM.hex8ToRgbaString(element.hex8)
                             }
                             break
                         case 'box':
                             if (element.marginTopVal) {
-                                styleObject['margin-top'] = `${element.marginTopVal}`
+                                styleObject['margin-top'] = element.marginTopVal
                             }
                             if (element.marginRightVal) {
-                                styleObject['margin-right'] = `${element.marginRightVal}`
+                                styleObject['margin-right'] = element.marginRightVal
                             }
                             if (element.marginBottomVal) {
-                                styleObject['margin-bottom'] = `${element.marginBottomVal}`
+                                styleObject['margin-bottom'] = element.marginBottomVal
                             }
                             if (element.marginLeftVal) {
-                                styleObject['margin-left'] = `${element.marginLeftVal}`
+                                styleObject['margin-left'] = element.marginLeftVal
                             }
                             if (element.paddingTopVal) {
-                                styleObject['padding-top'] = `${element.paddingTopVal}`
+                                styleObject['padding-top'] = element.paddingTopVal
                             }
                             if (element.paddingRightVal) {
-                                styleObject['padding-right'] = `${element.paddingRightVal}`
+                                styleObject['padding-right'] = element.paddingRightVal
                             }
                             if (element.paddingBottomVal) {
-                                styleObject['padding-bottom'] = `${element.paddingBottomVal}`
+                                styleObject['padding-bottom'] = element.paddingBottomVal
                             }
                             if (element.paddingLeftVal) {
-                                styleObject['padding-left'] = `${element.paddingLeftVal}`
+                                styleObject['padding-left'] = element.paddingLeftVal
                             }
                             break
                         case 'leftIconBox':
                             if (element.marginTopVal) {
-                                leftIconObj['margin-top'] = `${element.marginTopVal}`
+                                leftIconObj['margin-top'] = element.marginTopVal
                             }
                             if (element.marginRightVal) {
-                                leftIconObj['margin-right'] = `${element.marginRightVal}`
+                                leftIconObj['margin-right'] = element.marginRightVal
                             }
                             if (element.marginBottomVal) {
-                                leftIconObj['margin-bottom'] = `${element.marginBottomVal}`
+                                leftIconObj['margin-bottom'] = element.marginBottomVal
                             }
                             if (element.marginLeftVal) {
-                                leftIconObj['margin-left'] = `${element.marginLeftVal}`
+                                leftIconObj['margin-left'] = element.marginLeftVal
                             }
                             if (element.paddingTopVal) {
-                                leftIconObj['padding-top'] = `${element.paddingTopVal}`
+                                leftIconObj['padding-top'] = element.paddingTopVal
                             }
                             if (element.paddingRightVal) {
-                                leftIconObj['padding-right'] = `${element.paddingRightVal}`
+                                leftIconObj['padding-right'] = element.paddingRightVal
                             }
                             if (element.paddingBottomVal) {
-                                leftIconObj['padding-bottom'] = `${element.paddingBottomVal}`
+                                leftIconObj['padding-bottom'] = element.paddingBottomVal
                             }
                             if (element.paddingLeftVal) {
-                                leftIconObj['padding-left'] = `${element.paddingLeftVal}`
+                                leftIconObj['padding-left'] = element.paddingLeftVal
                             }
                             break
                         case 'rightIconBox':
                             if (element.marginTopVal) {
-                                rightIconObj['margin-top'] = `${element.marginTopVal}`
+                                rightIconObj['margin-top'] = element.marginTopVal
                             }
                             if (element.marginRightVal) {
-                                rightIconObj['margin-right'] = `${element.marginRightVal}`
+                                rightIconObj['margin-right'] = element.marginRightVal
                             }
                             if (element.marginBottomVal) {
-                                rightIconObj['margin-bottom'] = `${element.marginBottomVal}`
+                                rightIconObj['margin-bottom'] = element.marginBottomVal
                             }
                             if (element.marginLeftVal) {
-                                rightIconObj['margin-left'] = `${element.marginLeftVal}`
+                                rightIconObj['margin-left'] = element.marginLeftVal
                             }
                             if (element.paddingTopVal) {
-                                rightIconObj['padding-top'] = `${element.paddingTopVal}`
+                                rightIconObj['padding-top'] = element.paddingTopVal
                             }
                             if (element.paddingRightVal) {
-                                rightIconObj['padding-right'] = `${element.paddingRightVal}`
+                                rightIconObj['padding-right'] = element.paddingRightVal
                             }
                             if (element.paddingBottomVal) {
-                                rightIconObj['padding-bottom'] = `${element.paddingBottomVal}`
+                                rightIconObj['padding-bottom'] = element.paddingBottomVal
                             }
                             if (element.paddingLeftVal) {
-                                rightIconObj['padding-left'] = `${element.paddingLeftVal}`
+                                rightIconObj['padding-left'] = element.paddingLeftVal
                             }
                             break
                         case 'leftTextBox':
                             if (element.marginTopVal) {
-                                leftFontObj['margin-top'] = `${element.marginTopVal}`
+                                leftFontObj['margin-top'] = element.marginTopVal
                             }
                             if (element.marginRightVal) {
-                                leftFontObj['margin-right'] = `${element.marginRightVal}`
+                                leftFontObj['margin-right'] = element.marginRightVal
                             }
                             if (element.marginBottomVal) {
-                                leftFontObj['margin-bottom'] = `${element.marginBottomVal}`
+                                leftFontObj['margin-bottom'] = element.marginBottomVal
                             }
                             if (element.marginLeftVal) {
-                                leftFontObj['margin-left'] = `${element.marginLeftVal}`
+                                leftFontObj['margin-left'] = element.marginLeftVal
                             }
                             if (element.paddingTopVal) {
-                                leftFontObj['padding-top'] = `${element.paddingTopVal}`
+                                leftFontObj['padding-top'] = element.paddingTopVal
                             }
                             if (element.paddingRightVal) {
-                                leftFontObj['padding-right'] = `${element.paddingRightVal}`
+                                leftFontObj['padding-right'] = element.paddingRightVal
                             }
                             if (element.paddingBottomVal) {
-                                leftFontObj['padding-bottom'] = `${element.paddingBottomVal}`
+                                leftFontObj['padding-bottom'] = element.paddingBottomVal
                             }
                             if (element.paddingLeftVal) {
-                                leftFontObj['padding-left'] = `${element.paddingLeftVal}`
+                                leftFontObj['padding-left'] = element.paddingLeftVal
                             }
                             break
                         case 'rightTextBox':
                             if (element.marginTopVal) {
-                                rightFontObj['margin-top'] = `${element.marginTopVal}`
+                                rightFontObj['margin-top'] = element.marginTopVal
                             }
                             if (element.marginRightVal) {
-                                rightFontObj['margin-right'] = `${element.marginRightVal}`
+                                rightFontObj['margin-right'] = element.marginRightVal
                             }
                             if (element.marginBottomVal) {
-                                rightFontObj['margin-bottom'] = `${element.marginBottomVal}`
+                                rightFontObj['margin-bottom'] = element.marginBottomVal
                             }
                             if (element.marginLeftVal) {
-                                rightFontObj['margin-left'] = `${element.marginLeftVal}`
+                                rightFontObj['margin-left'] = element.marginLeftVal
                             }
                             if (element.paddingTopVal) {
-                                rightFontObj['padding-top'] = `${element.paddingTopVal}`
+                                rightFontObj['padding-top'] = element.paddingTopVal
                             }
                             if (element.paddingRightVal) {
-                                rightFontObj['padding-right'] = `${element.paddingRightVal}`
+                                rightFontObj['padding-right'] = element.paddingRightVal
                             }
                             if (element.paddingBottomVal) {
-                                rightFontObj['padding-bottom'] = `${element.paddingBottomVal}`
+                                rightFontObj['padding-bottom'] = element.paddingBottomVal
                             }
                             if (element.paddingLeftVal) {
-                                rightFontObj['padding-left'] = `${element.paddingLeftVal}`
+                                rightFontObj['padding-left'] = element.paddingLeftVal
                             }
                             break
                         case 'bgImgUrl':
@@ -336,7 +338,9 @@ export default {
                                     element.border.top.width + element.border.top.widthUnit
                                 styleObject['border-top-style'] = element.border.top.style
                                 if (element.border.top.colors.hex8) {
-                                    styleObject['border-top-color'] = element.border.top.colors.hex8
+                                    styleObject['border-top-color'] = IDM.hex8ToRgbaString(
+                                        element.border.top.colors.hex8
+                                    )
                                 }
                             }
                             if (element.border.right.width > 0) {
@@ -344,7 +348,9 @@ export default {
                                     element.border.right.width + element.border.right.widthUnit
                                 styleObject['border-right-style'] = element.border.right.style
                                 if (element.border.right.colors.hex8) {
-                                    styleObject['border-right-color'] = element.border.right.colors.hex8
+                                    styleObject['border-right-color'] = IDM.hex8ToRgbaString(
+                                        element.border.right.colors.hex8
+                                    )
                                 }
                             }
                             if (element.border.bottom.width > 0) {
@@ -352,7 +358,9 @@ export default {
                                     element.border.bottom.width + element.border.bottom.widthUnit
                                 styleObject['border-bottom-style'] = element.border.bottom.style
                                 if (element.border.bottom.colors.hex8) {
-                                    styleObject['border-bottom-color'] = element.border.bottom.colors.hex8
+                                    styleObject['border-bottom-color'] = IDM.hex8ToRgbaString(
+                                        element.border.bottom.colors.hex8
+                                    )
                                 }
                             }
                             if (element.border.left.width > 0) {
@@ -360,7 +368,9 @@ export default {
                                     element.border.left.width + element.border.left.widthUnit
                                 styleObject['border-left-style'] = element.border.left.style
                                 if (element.border.left.colors.hex8) {
-                                    styleObject['border-left-color'] = element.border.left.colors.hex8
+                                    styleObject['border-left-color'] = IDM.hex8ToRgbaString(
+                                        element.border.left.colors.hex8
+                                    )
                                 }
                             }
 
@@ -376,7 +386,7 @@ export default {
                         case 'titleFont':
                             titleFontObj['font-family'] = element.fontFamily
                             if (element.fontColors.hex8) {
-                                titleFontObj['color'] = element.fontColors.hex8
+                                titleFontObj['color'] = IDM.hex8ToRgbaString(element.fontColors.hex8)
                             }
                             titleFontObj['font-weight'] = element.fontWeight && element.fontWeight.split(' ')[0]
                             titleFontObj['font-style'] = element.fontStyle
@@ -390,7 +400,7 @@ export default {
                         case 'leftFont':
                             leftFontObj['font-family'] = element.fontFamily
                             if (element.fontColors.hex8) {
-                                leftFontObj['color'] = element.fontColors.hex8 + ' !important'
+                                leftFontObj['color'] = IDM.hex8ToRgbaString(element.fontColors.hex8) + ' !important'
                             }
                             leftFontObj['font-weight'] = element.fontWeight && element.fontWeight.split(' ')[0]
                             leftFontObj['font-style'] = element.fontStyle
@@ -404,7 +414,7 @@ export default {
                         case 'rightFont':
                             rightFontObj['font-family'] = element.fontFamily
                             if (element.fontColors.hex8) {
-                                rightFontObj['color'] = element.fontColors.hex8 + ' !important'
+                                rightFontObj['color'] = IDM.hex8ToRgbaString(element.fontColors.hex8) + ' !important'
                             }
                             rightFontObj['font-weight'] = element.fontWeight && element.fontWeight.split(' ')[0]
                             rightFontObj['font-style'] = element.fontStyle
@@ -460,7 +470,7 @@ export default {
                         ` #${this.moduleObject.id} .idm-navbar-left-icon`,
                         ` #${this.moduleObject.id} .idm-navbar-right-icon`,
                         ` #${this.moduleObject.id} .idm-navbar-left-text`,
-                        ` #${this.moduleObject.id} .idm-navbar-right-text`,
+                        ` #${this.moduleObject.id} .idm-navbar-right-text`
                     ]),
                     mainColorObj
                 )
@@ -470,68 +480,12 @@ export default {
             //请求数据源
             this.initData()
         },
-        initData() {
-            let that = this
-            //所有地址的url参数转换
-            var params = that.commonParam()
-            switch (this.propData.dataSourceType) {
-                case 'customInterface':
-                    this.propData.customInterfaceUrl &&
-                        window.IDM.http
-                            .get(this.propData.customInterfaceUrl, params)
-                            .then((res) => {
-                                //res.data
-                                that.$set(
-                                    that.propData,
-                                    'fontContent',
-                                    that.getExpressData('resultData', that.propData.dataFiled, res.data)
-                                )
-                                // that.propData.fontContent = ;
-                            })
-                            .catch(function (error) {})
-                    break
-                case 'pageCommonInterface':
-                    //使用通用接口直接跳过，在setContextValue执行
-                    break
-                case 'customFunction':
-                    if (this.propData.customFunction && this.propData.customFunction.length > 0) {
-                        var resValue = ''
-                        try {
-                            resValue =
-                                window[this.propData.customFunction[0].name] &&
-                                window[this.propData.customFunction[0].name].call(this, {
-                                    ...params,
-                                    ...this.propData.customFunction[0].param,
-                                    moduleObject: this.moduleObject
-                                })
-                        } catch (error) {}
-                        that.propData.fontContent = resValue
-                    }
-                    break
-            }
-        },
+        initData() {},
         receiveBroadcastMessage(object) {
             console.log('组件收到消息', object)
-            if (object.type && object.type == 'linkageShowModule') {
-                this.showThisModuleHandle()
-            } else if (object.type && object.type == 'linkageHideModule') {
-                this.hideThisModuleHandle()
-            }
         },
         setContextValue(object) {
             console.log('统一接口设置的值', object)
-            if (object.type != 'pageCommonInterface') {
-                return
-            }
-            //这里使用的是子表，所以要循环匹配所有子表的属性然后再去设置修改默认值
-            if (object.key == this.propData.dataName) {
-                // this.propData.fontContent = this.getExpressData(this.propData.dataName,this.propData.dataFiled,object.data);
-                this.$set(
-                    this.propData,
-                    'fontContent',
-                    this.getExpressData(this.propData.dataName, this.propData.dataFiled, object.data)
-                )
-            }
         },
         sendBroadcastMessage(object) {
             window.IDM.broadcast && window.IDM.broadcast.send(object)
@@ -553,6 +507,7 @@ $iconSize: 18px;
     font-size: $iconSize;
 }
 .idm-navbar {
+    // 背景透明
     & ::v-deep() .van-nav-bar {
         background: transparent;
     }
