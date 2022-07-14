@@ -83,6 +83,24 @@
                     "text": "显示层级",
                     "bindKey": "zIndex",
                     "default": 1
+                },
+                {
+                    "type": "select",
+                    "layoutType": "inline",
+                    "text": "标签风格",
+                    "desc": "选择tabbar的显示风格",
+                    "bindKey": "tabbarType",
+                    "default": "traditionStyle",
+                    "dictionary": [
+                        {
+                            "label": "传统风格",
+                            "value": "traditionStyle"
+                        },
+                        {
+                            "label": "激活文字",
+                            "value": "activeText"
+                        }
+                    ]
                 }
             ]
         },
@@ -101,6 +119,12 @@
                     "selectIconSize": 22,
                     "isAnimate": true,
                     "animateType": "tada",
+                    "activeBgWidth": "80%",
+                    "activeBgHeight": "80%",
+                    "activeBgTop": "8%",
+                    "activeBgColor": {
+                        "hex8": "#D3B8B622"
+                    },
                     "badgeBgColor": {
                         "hex8": "#EE0A24FF"
                     },
@@ -118,6 +142,12 @@
                     "badge": "99+",
                     "iconSize": 22,
                     "selectIconSize": 22,
+                    "activeBgWidth": "80%",
+                    "activeBgHeight": "80%",
+                    "activeBgTop": "8%",
+                    "activeBgColor": {
+                        "hex8": "#D3B8B622"
+                    },
                     "badgeBgColor": {
                         "hex8": "#EE0A24FF"
                     },
@@ -129,6 +159,12 @@
                     "tab": "标签",
                     "iconSize": 22,
                     "isAnimate": true,
+                    "activeBgWidth": "80%",
+                    "activeBgHeight": "80%",
+                    "activeBgTop": "8%",
+                    "activeBgColor": {
+                        "hex8": "#D3B8B622"
+                    },
                     "animateType": "tada",
                     "selectIconSize": 22,
                     "badgeBgColor": {
@@ -192,6 +228,14 @@
                         {
                             "label": "rubberBand",
                             "value": "rubberBand"
+                        },
+                        {
+                            "label": "swashIn",
+                            "value": "swashIn"
+                        },
+                        {
+                            "label": "puffIn",
+                            "value": "puffIn"
                         }
                     ]
                 },
@@ -207,7 +251,7 @@
                     "layoutType": "inline",
                     "text": "tab文字",
                     "bindKey": "tab",
-                    "default": "新增选项"
+                    "default": "标签"
                 },
                 {
                     "type": "input",
@@ -233,6 +277,44 @@
                     "default": {
                         "hex8": "#EE0A24FF"
                     }
+                },
+                {
+                    "type": "colorPicker",
+                    "layoutType": "inline",
+                    "text": "选中背景",
+                    "desc": "激活文字风格下背景颜色，注意要选择透明度，不然会覆盖文字",
+                    "bindKey": "activeBgColor",
+                    "display": "@[tabbarType === 'activeText']",
+                    "default": {
+                        "hex8": "#D3B8B622"
+                    }
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "背景宽度",
+                    "desc": "激活文字风格下，选中的背景宽度，建议使用百分比",
+                    "bindKey": "activeBgWidth",
+                    "display": "@[tabbarType === 'activeText']",
+                    "default": "80%"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "背景高度",
+                    "desc": "激活文字风格下，选中的背景高度，建议使用百分比",
+                    "bindKey": "activeBgHeight",
+                    "display": "@[tabbarType === 'activeText']",
+                    "default": "80%"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "背景偏移",
+                    "desc": "激活文字风格下，选中的背景top偏移量，建议使用百分比",
+                    "bindKey": "activeBgTop",
+                    "display": "@[tabbarType === 'activeText']",
+                    "default": "8%"
                 },
                 {
                     "type": "select",
@@ -278,7 +360,6 @@
                     "desc": "tab页签内容自定义函数，支持返回HTML格式字符串，接收参数为格式为{...自定义的,当前页签数据对象}，返回html字符串",
                     "multiple": false
                 },
-
                 {
                     "type": "font",
                     "layoutType": "block",

@@ -32,6 +32,10 @@
                 v-for="(item, index) in propData.tabbarList"
                 :key="index"
                 :badge="item.isShowBadge ? item.badge : ''"
+                :class="{
+                    'idm-tabbar-style-active-text': propData.tabbarType === 'activeText',
+                    'idm-tabbar-style-active-text-active': active === index && propData.tabbarType === 'activeText'
+                }"
             >
                 <!-- tabbar-item插槽 -->
                 <template #icon="props">
@@ -87,6 +91,8 @@
                 </template>
                 <!-- tabbar-item文本 -->
                 <span :class="[active === index ? 'idm-tabbar-text-active' : 'idm-tabbar-text']">{{ item.tab }}</span>
+                <!-- 激活文字风格下的背景 -->
+                <div class="idm-tabbar-active-style-bg"></div>
             </van-tabbar-item>
         </van-tabbar>
     </div>
@@ -250,7 +256,8 @@ export default {
                         fontObj = {},
                         selectFontObj = {},
                         iconObj = {},
-                        selectIconObj = {}
+                        selectIconObj = {},
+                        activeBgObj = {}
                     //角标背景
                     if (el.badgeBgColor && el.badgeBgColor.hex8) {
                         badgeBgColorObj['background-color'] = IDM.hex8ToRgbaString(el.badgeBgColor.hex8)
@@ -306,6 +313,22 @@ export default {
                         selectIconObj['fill'] = IDM.hex8ToRgbaString(el.selectIconColor.hex8) + ' !important'
                         selectIconObj['color'] = IDM.hex8ToRgbaString(el.selectIconColor.hex8) + ' !important'
                     }
+                    // 选中背景色
+                    if (el.activeBgColor && el.activeBgColor.hex8) {
+                        activeBgObj['background-color'] = IDM.hex8ToRgbaString(el.activeBgColor.hex8)
+                    }
+                    // 选中背景宽
+                    if (el.activeBgWidth) {
+                        activeBgObj['width'] = el.activeBgWidth
+                    }
+                    // 选中背景高
+                    if (el.activeBgHeight) {
+                        activeBgObj['height'] = el.activeBgHeight
+                    }
+                    // 选中背景偏移
+                    if (el.activeBgTop) {
+                        activeBgObj['top'] = el.activeBgTop
+                    }
                     window.IDM.setStyleToPageHead(
                         this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .van-info`,
                         badgeBgColorObj
@@ -326,11 +349,16 @@ export default {
                         this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}) .idm-tabbar-select-icon`,
                         selectIconObj
                     )
+                    window.IDM.setStyleToPageHead(
+                        this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}).idm-tabbar-style-active-text-active .idm-tabbar-active-style-bg`,
+                        activeBgObj
+                    )
                 })
         },
         convertAttrToStyleObject() {
             const styleObject = {},
-                fontBoxObj = {}
+                fontBoxObj = {},
+                activeStyleFontObj = {}
             if (this.propData.bgSize && this.propData.bgSize == 'custom') {
                 styleObject['background-size'] =
                     (this.propData.bgSizeWidth
@@ -364,6 +392,9 @@ export default {
                         case 'width':
                         case 'height':
                             styleObject[key] = element
+                            break
+                        case 'activeStyleBgColor':
+
                             break
                         case 'bgColor':
                             if (element && element.hex8) {
@@ -587,6 +618,7 @@ export default {
 @import '~vant/lib/tabbar/index.css';
 @import '~vant/lib/tabbar-item/index.css';
 @import '~vant/lib/info/index.css';
+@import '../style/animate.scss';
 $fontSize: 12px;
 .idm-tabbar {
     // tabbar背景透明
@@ -597,11 +629,13 @@ $fontSize: 12px;
     & ::v-deep() .van-tabbar--fixed.idm-tabbar-develop {
         position: absolute;
     }
-
     .idm-tabbar-develop {
         & ::v-deep() .van-tabbar--fixed {
             position: absolute;
         }
+    }
+    & ::v-deep() .van-tabbar-item {
+        position: relative;
     }
     .idm-tabbar-text,
     .idm-tabbar-text-active {
@@ -611,60 +645,33 @@ $fontSize: 12px;
         display: flex;
         align-items: center;
     }
-    @keyframes tada {
-        from {
-            transform: scale3d(1, 1, 1);
-        }
-        10%,
-        20% {
-            transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
-        }
-        30%,
-        50%,
-        70%,
-        90% {
-            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
-        }
-        40%,
-        60%,
-        80% {
-            transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
-        }
-        to {
-            transform: scale3d(1, 1, 1);
+    .idm-tabbar-style-active-text {
+        flex-direction: row;
+        .idm-tabbar-text {
+            display: none;
         }
     }
-    .tada {
-        animation-name: tada;
-        animation-duration: 1s;
+    .idm-tabbar-active-style-bg {
+        position: absolute;
+        width: 0;
+        height: 80%;
+        background: #d3b8b622;
+        border-radius: 20px;
+        left: 8%;
+        top: 8%;
     }
-
-    @keyframes rubberBand {
-        from {
-            transform: scale3d(1, 1, 1);
+    .idm-tabbar-style-active-text-active {
+        .idm-tabbar-active-style-bg {
+            transition: width 0.3s;
+            width: 80%;
         }
-        30% {
-            transform: scale3d(1.25, 0.75, 1);
+        .idm-tabbar-text {
+            display: block;
         }
-        40% {
-            transform: scale3d(0.75, 1.25, 1);
+        .idm-tabbar-text-active{
+            font-size: 15px;
+            margin: 0 0 0 10px;
         }
-        50% {
-            transform: scale3d(1.15, 0.85, 1);
-        }
-        65% {
-            transform: scale3d(0.95, 1.05, 1);
-        }
-        75% {
-            transform: scale3d(1.05, 0.95, 1);
-        }
-        to {
-            transform: scale3d(1, 1, 1);
-        }
-    }
-    .rubberBand {
-        animation-name: rubberBand;
-        animation-duration: 1s;
     }
 }
 </style>
