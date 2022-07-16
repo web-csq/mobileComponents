@@ -350,7 +350,10 @@ export default {
                         selectIconObj
                     )
                     window.IDM.setStyleToPageHead(
-                        this.moduleObject.id + ` .van-tabbar-item:nth-child(${index + 1}).idm-tabbar-style-active-text-active .idm-tabbar-active-style-bg`,
+                        this.moduleObject.id +
+                            ` .van-tabbar-item:nth-child(${
+                                index + 1
+                            }).idm-tabbar-style-active-text-active .idm-tabbar-active-style-bg`,
                         activeBgObj
                     )
                 })
@@ -394,7 +397,6 @@ export default {
                             styleObject[key] = element
                             break
                         case 'activeStyleBgColor':
-
                             break
                         case 'bgColor':
                             if (element && element.hex8) {
@@ -668,7 +670,7 @@ $fontSize: 12px;
         .idm-tabbar-text {
             display: block;
         }
-        .idm-tabbar-text-active{
+        .idm-tabbar-text-active {
             font-size: 15px;
             margin: 0 0 0 10px;
         }

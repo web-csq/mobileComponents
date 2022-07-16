@@ -188,6 +188,12 @@
                     "bindKey": "border"
                 },
                 {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "导航阴影",
+                    "bindKey": "boxShadow"
+                },
+                {
                     "type": "box",
                     "layoutType": "block",
                     "text": "内外边距",

@@ -153,6 +153,9 @@ export default {
                         continue
                     }
                     switch (key) {
+                        case 'boxShadow':
+                            styleObject['box-shadow'] = element
+                            break
                         case 'leftIconColor':
                             if(element.hex8) {
                                 leftIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
