@@ -90,6 +90,7 @@ export default {
          * @param {函数名称} name
          */
         eventFunHandle(name) {
+            if(this.moduleObject.env === 'develop') return
             var customHandle = this.propData[name]
             customHandle &&
                 customHandle.forEach((item) => {
@@ -103,7 +104,15 @@ export default {
         },
         // 左侧点击事件
         handleLeftClick() {
-            this.eventFunHandle('leftCustomFunction')
+            if (this.propData.leftCustomFunction && this.propData.leftCustomFunction.length > 0) {
+                this.eventFunHandle('leftCustomFunction')
+                return
+            }
+            // 默认返回上一级子页面
+            const currentId = this.moduleObject.routerId
+            if (currentId) {
+                IDM.router.back(currentId)
+            }
         },
         // 标题点击事件
         handleTitleClick() {
@@ -157,7 +166,7 @@ export default {
                             styleObject['box-shadow'] = element
                             break
                         case 'leftIconColor':
-                            if(element.hex8) {
+                            if (element.hex8) {
                                 leftIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
                                 leftIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
                             }
@@ -168,7 +177,7 @@ export default {
                             leftIconObj['font-size'] = element + 'px'
                             break
                         case 'rightIconColor':
-                            if(element.hex8) {
+                            if (element.hex8) {
                                 rightIconObj['fill'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
                                 rightIconObj['color'] = IDM.hex8ToRgbaString(element.hex8) + ' !important'
                             }

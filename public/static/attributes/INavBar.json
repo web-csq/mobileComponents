@@ -147,6 +147,7 @@
                     "layoutType": "inline",
                     "text": "导航层级",
                     "bindKey": "zIndex",
+                    "desc": "导航栏 z-index属性设置",
                     "default": 1
                 }
             ]
@@ -185,13 +186,15 @@
                 {
                     "type": "input",
                     "layoutType": "inline",
-                    "text": "阴影",
+                    "desc": "设置navbar的阴影样式，例如：2px 2px 2px #f1f1f1",
+                    "text": "导航阴影",
                     "bindKey": "boxShadow"
                 },
                 {
                     "type": "border",
                     "layoutType": "block",
-                    "text": "边框",
+                    "desc": "设置navbar的边款样式",
+                    "text": "导航边框",
                     "bindKey": "border"
                 },
                 {
@@ -572,7 +575,7 @@
                     "layoutType": "block",
                     "text": "左侧点击自定义函数",
                     "bindKey": "leftCustomFunction",
-                    "desc": "自定义左侧点击事件",
+                    "desc": "自定义左侧点击事件，会替换默认返回上级页面事件",
                     "multiple": false
                 },
                 {
