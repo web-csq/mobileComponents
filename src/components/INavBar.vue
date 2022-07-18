@@ -90,7 +90,7 @@ export default {
          * @param {函数名称} name
          */
         eventFunHandle(name) {
-            if(this.moduleObject.env === 'develop') return
+            if (this.moduleObject.env === 'develop') return
             var customHandle = this.propData[name]
             customHandle &&
                 customHandle.forEach((item) => {
@@ -116,7 +116,14 @@ export default {
         },
         // 标题点击事件
         handleTitleClick() {
-            this.eventFunHandle('titleCustomFunction')
+            if (this.propData.titleCustomFunction && this.propData.titleCustomFunction.length > 0) {
+                this.eventFunHandle('titleCustomFunction')
+                return
+            }
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            })
         },
         // 右侧点击事件
         handleRightClick() {

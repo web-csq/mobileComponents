@@ -583,7 +583,7 @@
                     "layoutType": "block",
                     "text": "标题点击自定义函数",
                     "bindKey": "titleCustomFunction",
-                    "desc": "自定义标题点击事件",
+                    "desc": "自定义标题点击事件，会替换默认的window.scrollTop({top: 0})",
                     "multiple": false
                 },
                 {
