@@ -181,17 +181,18 @@
                         }
                     ]
                 },
+                
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "阴影",
+                    "bindKey": "boxShadow"
+                },
                 {
                     "type": "border",
                     "layoutType": "block",
                     "text": "边框",
                     "bindKey": "border"
-                },
-                {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "导航阴影",
-                    "bindKey": "boxShadow"
                 },
                 {
                     "type": "box",
